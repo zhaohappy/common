@@ -59,7 +59,7 @@ function webpackBootstrapFunc (modules) {
     	}, []));
 	};
   __webpack_require__.u = function(chunkId) {
-    return "" + chunkId + ".avplayer.js";
+    return chunkId + "LIB_NAME";
   };
   __webpack_require__.n = function(module) {
     var getter = module && module.__esModule ?
@@ -170,7 +170,7 @@ function quoteRegExp(str: string) {
 
 function isNumeric(n: any) {
   // 1 * n converts integers, integers as string ("123"), 1e3 and "1e3" to integers and strings to NaN
-  return !isNaN(1 * n)
+  return !isNaN(n)
 }
 
 function getModuleDependencies(sources: string, module: string, queueName: string, requiredModules: Data) {
@@ -216,8 +216,8 @@ function getModuleDependencies(sources: string, module: string, queueName: strin
   const keys = Object.keys(retval)
   for (let i = 0; i < keys.length; i++) {
     for (let j = 0; j < retval[keys[i]].length; j++) {
-      if (isNumeric(retval[keys[i]][j])) {
-        retval[keys[i]][j] = 1 * retval[keys[i]][j]
+      if (isNumeric(+retval[keys[i]][j])) {
+        retval[keys[i]][j] = +retval[keys[i]][j]
       }
     }
   }
@@ -286,32 +286,35 @@ export default function (moduleId: string, options: {
   let src = ''
   let stringifyModuleId = JSON.stringify(moduleId)
 
-  // @ts-ignore
-  return src + 'var ' + options.varName + '=(' + webpackBootstrapFunc.replace('ENTRY_MODULE', stringifyModuleId).replace('ROOT_URL', __webpack_require__.p)
-    + ')({' + requiredModules.main.map(function (id) {
-    const stringifyId = JSON.stringify(id)
-    let source = '' + stringifyId + ': ' + sources.main[id].toString()
-    if (stringifyId === stringifyModuleId && options.exportName && options.pointName) {
-      const line = `;${requiredModules.__webpack_require__}.d(
-        ${requiredModules.__webpack_exports__},
-        "${options.exportName}",
-        function() {
-          if (${options.exportIsClass}) {
-            for (var key in ${requiredModules.__webpack_exports__}) {
-              if (key === '${options.exportName}') {
-                continue;
-              }
-              var v = ${requiredModules.__webpack_exports__}[key];
-              if (typeof v === 'function' && v.name === '${options.pointName}') {
-                return v;
+  return src + 'var ' + options.varName + '=('+ webpackBootstrapFunc.replace('ENTRY_MODULE', stringifyModuleId)
+    // @ts-ignore
+    .replace('ROOT_URL', __webpack_require__.p)
+    // @ts-ignore
+    .replace('LIB_NAME', __webpack_require__.u(''))
+      + ')({' + requiredModules.main.map(function (id) {
+      const stringifyId = JSON.stringify(id)
+      let source = '' + stringifyId + ': ' + sources.main[id].toString()
+      if (stringifyId === stringifyModuleId && options.exportName && options.pointName) {
+        const line = `;${requiredModules.__webpack_require__}.d(
+          ${requiredModules.__webpack_exports__},
+          "${options.exportName}",
+          function() {
+            if (${options.exportIsClass}) {
+              for (var key in ${requiredModules.__webpack_exports__}) {
+                if (key === '${options.exportName}') {
+                  continue;
+                }
+                var v = ${requiredModules.__webpack_exports__}[key];
+                if (typeof v === 'function' && v.name === '${options.pointName}') {
+                  return v;
+                }
               }
             }
+            return ${options.pointName};
           }
-          return ${options.pointName};
-        }
-      );`
-      source = source.slice(0, source.length - 1) + line + '}'
-    }
-    return source
-  }).join(',') + '});'
+        );`
+        source = source.slice(0, source.length - 1) + line + '}'
+      }
+      return source
+    }).join(',') + '});'
 }
