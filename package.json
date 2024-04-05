@@ -1,0 +1,23 @@
+{
+  "name": "common",
+  "version": "0.0.1",
+  "description": "公共组件、工具、函数库",
+  "sideEffects": [
+    "./timer/workerSetTimeoutTask.ts"
+  ],
+  "directories": {
+    "src": "src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhaohappy/common.git"
+  },
+  "scripts": {
+   
+  },
+  "author": "Gaoxing Zhao",
+  "license": "MIT",
+  "devDependencies": {
+   
+  }
+}
