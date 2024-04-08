@@ -18,7 +18,7 @@ export interface RpcMessage {
 
 export default class IPCPort extends Emitter {
 
-  private port: MessagePort
+  protected port: MessagePort
 
   private requestMap: Map<number, {
     resolve: (value: any) => void
@@ -33,7 +33,7 @@ export default class IPCPort extends Emitter {
     super(true)
     this.port = port
 
-    this.handle()
+    this.port.onmessage = this.handle.bind(this)
 
     this.seq = 0
     this.requestMap = new Map()
@@ -43,33 +43,31 @@ export default class IPCPort extends Emitter {
     this.closed = false
   }
 
-  private handle() {
-    this.port.onmessage = (event) => {
-      const origin = event.data
-      const type = origin.type
-      const data = origin.data
+  protected handle(event: MessageEvent<any>) {
+    const origin = event.data
+    const type = origin.type
+    const data = origin.data
 
-      if (type === 'notify') {
-        this.fire(NOTIFY, data)
-      }
-      else if (type === 'reply') {
-        const request = this.requestMap.get(data.seq)
-        if (request) {
-          if (isDef(data.result)) {
-            request.resolve(data.result)
-          }
-          else if (data.error) {
-            request.reject(data.error)
-          }
-          else {
-            request.resolve(undefined)
-          }
-          this.requestMap.delete(data.seq)
+    if (type === 'notify') {
+      this.fire(NOTIFY, data)
+    }
+    else if (type === 'reply') {
+      const request = this.requestMap.get(data.seq)
+      if (request) {
+        if (isDef(data.result)) {
+          request.resolve(data.result)
         }
+        else if (data.error) {
+          request.reject(data.error)
+        }
+        else {
+          request.resolve(undefined)
+        }
+        this.requestMap.delete(data.seq)
       }
-      else if (type === 'request') {
-        this.fire(REQUEST, data)
-      }
+    }
+    else if (type === 'request') {
+      this.fire(REQUEST, data)
     }
   }
 
