@@ -288,9 +288,9 @@ export default function (moduleId: string, options: {
 
   return src + 'var ' + options.varName + '=('+ webpackBootstrapFunc.replace('ENTRY_MODULE', stringifyModuleId)
     // @ts-ignore
-    .replace('ROOT_URL', __webpack_require__.p)
+    .replace('ROOT_URL', __webpack_require__.p || '')
     // @ts-ignore
-    .replace('LIB_NAME', __webpack_require__.u(''))
+    .replace('LIB_NAME', __webpack_require__.u && __webpack_require__.u('') || '')
       + ')({' + requiredModules.main.map(function (id) {
       const stringifyId = JSON.stringify(id)
       let source = '' + stringifyId + ': ' + sources.main[id].toString()
