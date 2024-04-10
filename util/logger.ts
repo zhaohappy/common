@@ -12,6 +12,8 @@ export const WARN = 3
 export const ERROR = 4
 export const FATAL = 5
 
+type defined<T extends string> = `defined(${T})`
+
 const nativeConsole: Console | null = typeof console !== constant.RAW_UNDEFINED ? console : constant.NULL,
 
     /**
