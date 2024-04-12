@@ -9,6 +9,11 @@ export type ReturnType<T> = T extends (...args: any[]) => infer P ? P : void
 export type ParamType<T> = T extends (...args: infer P) => any ? P : never
 
 /**
+ * 获取 Promise 的参数类型
+ */
+export type PromiseType<T> = T extends Promise<infer P> ? P : T
+
+/**
  * 类构造函数类型
  */
 export type Constructor<T> = new (...args: any[]) => T
@@ -67,8 +72,6 @@ export type AsyncReturnWithoutProperties<T> = RemoveNeverProperties<{
     ? (T[K] extends (...args: any[]) => Promise<any> ? T[K] : (...args: Parameters<T[K]>) => Promise<ReturnType<T[K]>>)
     : never
 }>
-
-export type UnwrapPointer<T> = T extends pointer<infer U> ? U : never
 
 export type UnwrapArray<T> = T extends (infer U)[] ? U : never
 
