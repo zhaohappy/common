@@ -1,10 +1,12 @@
 
 export interface BytesReaderSync {
   readUint8: () => number
+  getPos: () => bigint
 }
 
 export interface BytesReader {
   readUint8: () => Promise<number>
+  getPos: () => bigint
 }
 
 export interface BytesWriterSync {

@@ -6,7 +6,7 @@ import * as logger from '../util/logger'
 import { Uint8ArrayInterface, BytesWriterSync } from './interface'
 import * as text from '../util/text'
 
-export default class StreamWriter implements BytesWriterSync {
+export default class BufferWriter implements BytesWriterSync {
 
   private data: DataView
 

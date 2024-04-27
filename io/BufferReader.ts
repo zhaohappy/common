@@ -5,9 +5,8 @@
 import concatTypeArray from '../function/concatTypeArray'
 import * as text from '../util/text'
 import { Uint8ArrayInterface, BytesReaderSync } from './interface'
-import * as logger from '../util/logger'
 
-export default class StreamReader implements BytesReaderSync {
+export default class BufferReader implements BytesReaderSync {
 
   private data: DataView
 
@@ -234,7 +233,7 @@ export default class StreamReader implements BytesReaderSync {
    * @returns 
    */
   public getPos() {
-    return this.pos
+    return BigInt(this.pos)
   }
 
   /**

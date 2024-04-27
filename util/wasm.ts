@@ -1,4 +1,4 @@
-import StreamReader from '../io/StreamReader'
+import BufferReader from '../io/BufferReader'
 import { BytesReaderSync, BytesReader, BytesWriter, BytesWriterSync } from '../io/interface'
 
 export const enum SectionId {
@@ -160,7 +160,7 @@ export async function writeUleb128Async(writer: BytesWriter, value: number) {
 }
 
 export function setMemoryShared(wasm: Uint8Array, shared: boolean) {
-  const reader = new StreamReader(wasm, true)
+  const reader = new BufferReader(wasm, true)
 
   reader.skip(8)
 
@@ -191,7 +191,7 @@ export function setMemoryShared(wasm: Uint8Array, shared: boolean) {
             break
           }
           case ExternalKind.Memory: {
-            const pos = reader.getPos()
+            const pos = Number(reader.getPos())
             if (shared) {
               wasm[pos] = wasm[pos] | 2
             }

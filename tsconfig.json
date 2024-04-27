@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
-    "composite": true
+    "composite": true,
+    "module": "esnext",
+    "target": "esnext",
   },
   "include": [
     "./**/*.ts"
