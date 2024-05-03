@@ -229,7 +229,7 @@ export function set(object: Data, keypath: string, value: any, autofill?: boolea
  * @param key
  * @return
  */
-export function has(object: Data, key: string | number | symbol): boolean {
+export function has<T extends Data>(object: T, key: keyof T): boolean {
   // 不用 hasOwnProperty，性能差
   return object[key] !== constant.UNDEFINED
 }
