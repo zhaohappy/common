@@ -79,7 +79,7 @@ function supportedFeatures() {
     simd: browser.chrome && browser.checkVersion(browser.majorVersion, '91', true)
       || browser.firefox && browser.checkVersion(browser.majorVersion, '89', true)
       || browser.safari && browser.checkVersion(browser.version, '16.4', true),
-    baseSupported: fetchSupported && wasm && webgl && audioContext && arrayBuffer && webAssemblyGlobal
+    wasmBaseSupported: fetchSupported && wasm && webgl && audioContext && arrayBuffer && webAssemblyGlobal
   }
 }
 
