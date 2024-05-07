@@ -286,16 +286,16 @@ export default function (moduleId: string, options: {
   let src = ''
   let stringifyModuleId = JSON.stringify(moduleId)
 
-  return src + 'var ' + options.varName + '=('+ webpackBootstrapFunc.replace('ENTRY_MODULE', stringifyModuleId)
+  return src + 'var ' + options.varName + '=(' + webpackBootstrapFunc.replace('ENTRY_MODULE', stringifyModuleId)
     // @ts-ignore
     .replace('ROOT_URL', __webpack_require__.p || '')
     // @ts-ignore
     .replace('LIB_NAME', __webpack_require__.u && __webpack_require__.u('') || '')
       + ')({' + requiredModules.main.map(function (id) {
-      const stringifyId = JSON.stringify(id)
-      let source = '' + stringifyId + ': ' + sources.main[id].toString()
-      if (stringifyId === stringifyModuleId && options.exportName && options.pointName) {
-        const line = `;${requiredModules.__webpack_require__}.d(
+    const stringifyId = JSON.stringify(id)
+    let source = '' + stringifyId + ': ' + sources.main[id].toString()
+    if (stringifyId === stringifyModuleId && options.exportName && options.pointName) {
+      const line = `;${requiredModules.__webpack_require__}.d(
           ${requiredModules.__webpack_exports__},
           "${options.exportName}",
           function() {
@@ -313,8 +313,8 @@ export default function (moduleId: string, options: {
             return ${options.pointName};
           }
         );`
-        source = source.slice(0, source.length - 1) + line + '}'
-      }
-      return source
-    }).join(',') + '});'
+      source = source.slice(0, source.length - 1) + line + '}'
+    }
+    return source
+  }).join(',') + '});'
 }
