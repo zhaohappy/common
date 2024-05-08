@@ -7,6 +7,7 @@ import * as logger from '../util/logger'
 import IOWriter from './IOWriter'
 import * as text from '../util/text'
 import { Uint8ArrayInterface, BytesReader } from './interface'
+import Sleep from '../timer/Sleep'
 
 export default class IOReader implements BytesReader {
 
@@ -28,7 +29,7 @@ export default class IOReader implements BytesReader {
 
   public error: number
 
-  public onFlush: (data: Uint8Array) => Promise<number> | number
+  public onFlush: (buffer: Uint8Array) => Promise<number> | number
 
   public onSeek: (seek: bigint) => Promise<number> | number
 
@@ -536,6 +537,16 @@ export default class IOReader implements BytesReader {
     return this.endPointer - this.pointer
   }
 
+  private async flush_(buffer: Uint8Array) {
+    while (true) {
+      const len = await this.onFlush(buffer)
+      if (len !== IOError.AGAIN) {
+        return len
+      }
+      await new Sleep(0)
+    }
+  }
+
   public async flush(need: number = 0) {
 
     if (!this.onFlush) {
@@ -561,7 +572,7 @@ export default class IOReader implements BytesReader {
 
     if (need) {
       while (this.remainingLength() < need) {
-        const len = await this.onFlush(this.buffer.subarray(this.endPointer))
+        const len = await this.flush_(this.buffer.subarray(this.endPointer))
         if (len < 0) {
           this.error = len
           throw new Error(`IOReader error, flush ${len === IOError.END ? 'ended' : 'failed'}, ret: ${len}`)
@@ -570,7 +581,7 @@ export default class IOReader implements BytesReader {
       }
     }
     else {
-      const len = await this.onFlush(this.buffer.subarray(this.endPointer))
+      const len = await this.flush_(this.buffer.subarray(this.endPointer))
       if (len < 0) {
         this.error = len
         throw new Error(`IOReader error, flush ${len === IOError.END ? 'ended' : 'failed'}, ret: ${len}`)
@@ -705,7 +716,7 @@ export default class IOReader implements BytesReader {
         this.pos += BigInt(len)
       }
 
-      while (await this.onFlush(this.buffer.subarray(0)) > 0) {
+      while (await this.flush_(this.buffer.subarray(0)) > 0) {
         const len = this.remainingLength()
         await ioWriter.writeBuffer(this.buffer.subarray(this.pointer, this.pointer + len))
         this.pointer += len

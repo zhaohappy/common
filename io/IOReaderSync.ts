@@ -28,7 +28,7 @@ export default class IOReaderSync implements BytesReaderSync {
 
   public error: number
 
-  public onFlush: (data: Uint8Array) => number
+  public onFlush: (buffer: Uint8Array) => number
 
   public onSeek: (seek: bigint) => number
 
