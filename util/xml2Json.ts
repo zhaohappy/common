@@ -1,6 +1,6 @@
 /**
  * from https://github.com/hendt/xml2json
- * MIT
+ * MIT License
  * 
  * 修复属性之间没有空格无法解析的问题
  */

@@ -145,8 +145,8 @@ export default class AESSoftDecryptor {
     const invSubMix2 = invSubMix[2]
     const invSubMix3 = invSubMix[3]
 
-    let prev
-    let t
+    let prev: number
+    let t: number
 
     for (ksRow = 0; ksRow < ksRows; ksRow++) {
       if (ksRow < keySize) {

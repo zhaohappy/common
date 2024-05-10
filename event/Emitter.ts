@@ -1,6 +1,6 @@
 /**
  * https://github.com/yoxjs/yox-common/blob/master/src/util/Emitter.ts
- * MIT
+ * MIT License
  * 
  * @file 事件代理
  */

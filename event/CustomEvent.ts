@@ -1,6 +1,6 @@
 /**
  * https://github.com/yoxjs/yox-common/blob/master/src/util/CustomEvent.ts
- * MIT
+ * MIT License
  * 
  * @file 事件
  */
