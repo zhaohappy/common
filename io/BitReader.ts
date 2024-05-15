@@ -102,6 +102,10 @@ export default class BitReader {
     return this.endPointer - this.pointer
   }
 
+  public getPos() {
+    return this.pointer
+  }
+
   public flush() {
 
     if (!this.onFlush) {
