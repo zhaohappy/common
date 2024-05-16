@@ -50,12 +50,22 @@ export default class IOReader implements BytesReader {
     this.littleEndian = !bigEndian
     this.flags = 0
 
-    if (map) {
-      this.size = size
+    if (map && map.view) {
+      this.size = map.length
       this.buffer = map
       this.data = map.view
     }
+    else if (map && !map.byteOffset) {
+      this.size = map.length
+      this.buffer = map
+      this.data = new DataView(this.buffer.buffer)
+    }
     else {
+
+      if (map) {
+        throw new Error('not support subarray of ArrayBuffer')
+      }
+
       this.size = Math.max(size, 100 * 1024)
       this.buffer = new Uint8Array(this.size)
       this.data = new DataView(this.buffer.buffer)

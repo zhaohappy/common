@@ -36,11 +36,22 @@ export default class IOWriterSync implements BytesWriterSync {
     this.littleEndian = !bigEndian
     this.error = 0
 
-    if (map) {
+    if (map && map.view) {
+      this.size = map.length
       this.buffer = map
       this.data = map.view
     }
+    else if (map && !map.byteOffset) {
+      this.size = map.length
+      this.buffer = map
+      this.data = new DataView(this.buffer.buffer)
+    }
     else {
+
+      if (map) {
+        throw new Error('not support subarray of ArrayBuffer')
+      }
+
       this.buffer = new Uint8Array(this.size)
       this.data = new DataView(this.buffer.buffer)
     }
