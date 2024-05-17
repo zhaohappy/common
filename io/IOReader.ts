@@ -448,7 +448,9 @@ export default class IOReader implements BytesReader {
       let got = false
       for (let i = this.pointer; i < this.endPointer; i++) {
         if (this.buffer[i] === 0x0a || this.buffer[i] === 0x0d) {
-          str += await this.readString(i - this.pointer)
+          if (i !== this.pointer) {
+            str += await this.readString(i - this.pointer)
+          }
           got = true
           break
         }

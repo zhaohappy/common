@@ -463,7 +463,9 @@ export default class IOReaderSync implements BytesReaderSync {
       let got = false
       for (let i = this.pointer; i < this.endPointer; i++) {
         if (this.buffer[i] === 0x0a || this.buffer[i] === 0x0d) {
-          str += this.readString(i - this.pointer)
+          if (i !== this.pointer) {
+            str += this.readString(i - this.pointer)
+          }
           got = true
           break
         }
