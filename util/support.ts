@@ -76,7 +76,7 @@ function supportedFeatures() {
     workerMSE,
     webAssemblyGlobal,
     proxy,
-    simd: browser.chrome && browser.checkVersion(browser.majorVersion, '91', true)
+    simd: (browser.chrome || browser.newEdge) && browser.checkVersion(browser.majorVersion, '91', true)
       || browser.firefox && browser.checkVersion(browser.majorVersion, '89', true)
       || browser.safari && browser.checkVersion(browser.version, '16.4', true),
     wasmBaseSupported: fetchSupported && wasm && webgl && audioContext && arrayBuffer && webAssemblyGlobal
