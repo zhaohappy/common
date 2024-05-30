@@ -397,7 +397,7 @@ interface GPUTexture extends GPUObjectBase {
 interface GPUImageCopyTexture {
   texture: GPUTexture
   mipLevel?: number
-  origin?: GPUExtent3D
+  origin?: GPUOrigin3D
   aspect?: GPUTextureAspect
 }
 
