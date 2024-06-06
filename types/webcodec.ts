@@ -45,23 +45,6 @@ declare interface AudioData {
   }): void
 }
 
-/**
- * @deprecated use AudioData instead
- */
-declare interface AudioFrame {
-  timestamp: number
-  buffer: AudioBuffer
-  close(): void
-}
-
-declare const AudioFrame: {
-  prototype: AudioFrame
-  new(init: {
-    timestamp: number
-    buffer: AudioBuffer
-  }): AudioFrame
-}
-
 declare interface EncodedAudioChunk {
   type: 'key' | 'delta'
   timestamp: number
@@ -100,12 +83,26 @@ declare interface AudioDecoder {
   close(): void
 }
 
+declare interface AudioDecoderConfig {
+  codec: string
+  sampleRate: number
+  numberOfChannels: number
+  description?: AllowSharedBufferSource
+}
+
+declare interface AudioDecoderSupport {
+  supported: boolean
+  config: AudioDecoderConfig
+}
+
 declare const AudioDecoder: {
   prototype: AudioDecoder
   new(init: {
-    output: (data: AudioFrame | AudioData) => void,
+    output: (data: AudioData) => void,
     error: (error: Error) => void
   }): AudioDecoder
+
+  isConfigSupported(config: AudioDecoderConfig): Promise<AudioDecoderSupport>
 }
 
 interface Plane {
@@ -135,6 +132,19 @@ declare interface AudioData {
   }): void
 }
 
+declare const AudioData: {
+  prototype: AudioData
+  new(init: {
+    format: 'u8' | 's16' | 's32' | 'f32' | 'u8-planar' | 's16-planar' | 's32-planar' | 'f32-planar'
+    sampleRate: number
+    numberOfFrames: number
+    numberOfChannels: number
+    timestamp: number
+    data: ArrayBufferView
+    transfer?: ArrayBuffer[]
+  }): AudioData
+}
+
 declare interface EncodedAudioChunk {
   type: 'key' | 'delta'
   timestamp: number
@@ -156,13 +166,26 @@ declare interface AudioEncoder {
     bitrate: number
   }): void
 
-  encode(data: AudioFrame | AudioData): void
+  encode(data: AudioData): void
 
   flush(): Promise<void>
 
   reset(): void
 
   close(): void
+}
+
+declare interface AudioEncoderConfig {
+  codec: string
+  sampleRate: number
+  numberOfChannels: number
+  bitrate: number
+  description?: AllowSharedBufferSource
+}
+
+declare interface AudioEncoderSupport {
+  supported: boolean
+  config: AudioDecoderConfig
 }
 
 declare const AudioEncoder: {
@@ -178,4 +201,6 @@ declare const AudioEncoder: {
     }) => void,
     error: (error: Error) => void
   }): AudioEncoder
+
+  isConfigSupported(config: AudioEncoderConfig): Promise<AudioEncoderSupport>
 }
