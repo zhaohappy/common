@@ -12,18 +12,7 @@ interface Plane {
   readInto: (buffer: WebCodecBufferSource) => void
 }
 
-enum AudioSampleFormat {
-  'U8',
-  'S16',
-  'S24',
-  'S32',
-  'FLT',
-  'U8P',
-  'S16P',
-  'S24P',
-  'S32P',
-  'FLTP',
-};
+declare type AudioDataFormat = 'u8' | 's16' | 's32' | 'f32' | 'u8-planar' | 's16-planar' | 's32-planar' | 'f32-planar'
 
 declare interface AudioData {
   readonly duration: number
@@ -31,7 +20,7 @@ declare interface AudioData {
   readonly sampleRate: number
   readonly timestamp: number
   readonly numberOfFrames: number
-  readonly format: string
+  readonly format: AudioDataFormat
 
   close(): void
 
@@ -41,7 +30,7 @@ declare interface AudioData {
     planeIndex: number
     frameOffset?: number
     frameCount?: number
-    format?: 'u8' | 's16' | 's32' | 'f32' | 'u8-planar' | 's16-planar' | 's32-planar' | 'f32-planar'
+    format?: AudioDataFormat
   }): void
 }
 
@@ -119,7 +108,7 @@ declare interface AudioData {
   readonly sampleRate: number
   readonly timestamp: number
   readonly numberOfFrames: number
-  readonly format: string
+  readonly format: AudioDataFormat
 
   close(): void
 
@@ -128,14 +117,14 @@ declare interface AudioData {
     planeIndex: number
     frameOffset?: number
     frameCount?: number
-    format?: 'u8' | 's16' | 's32' | 'f32' | 'u8-planar' | 's16-planar' | 's32-planar' | 'f32-planar'
+    format?: AudioDataFormat
   }): void
 }
 
 declare const AudioData: {
   prototype: AudioData
   new(init: {
-    format: 'u8' | 's16' | 's32' | 'f32' | 'u8-planar' | 's16-planar' | 's32-planar' | 'f32-planar'
+    format: AudioDataFormat
     sampleRate: number
     numberOfFrames: number
     numberOfChannels: number
