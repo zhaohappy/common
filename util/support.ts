@@ -22,8 +22,10 @@ function supportedFeatures() {
   let audioWorklet = typeof AudioWorklet === 'function'
 
   let videoDecoder = typeof VideoDecoder === 'function'
+  let videoEncoder = typeof VideoEncoder === 'function'
 
   let audioDecoder = typeof AudioDecoder === 'function'
+  let audioEncoder = typeof AudioEncoder === 'function'
 
   let shareArrayBuffer = typeof SharedArrayBuffer === 'function'
 
@@ -67,7 +69,9 @@ function supportedFeatures() {
     audioContext,
     audioWorklet,
     videoDecoder,
+    videoEncoder,
     audioDecoder,
+    audioEncoder,
     atomics,
     shareArrayBuffer,
     thread,
