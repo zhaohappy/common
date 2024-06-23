@@ -72,4 +72,8 @@ export default class CommandQueue {
       command.error = error || new Error('command queue clear')
     })
   }
+
+  get length() {
+    return this.queue.length
+  }
 }
