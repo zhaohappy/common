@@ -1,5 +1,5 @@
 /**
- * @file 可升缩循环任务队列
+ * @file 可伸缩循环任务队列
  */
 
 import Clock from './Clock'
