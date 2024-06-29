@@ -170,6 +170,7 @@ declare interface AudioEncoderConfig {
   numberOfChannels: number
   bitrate: number
   description?: AllowSharedBufferSource
+  bitrateMode?: 'constant' | 'variable'
 }
 
 declare interface AudioEncoderSupport {

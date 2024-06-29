@@ -401,6 +401,51 @@ export default class IOReader implements BytesReader {
     return buffer
   }
 
+  public async readToBuffer(length: number, buffer: Uint8ArrayInterface): Promise<number> {
+    if (this.remainingLength() < length) {
+      let index = 0
+
+      if (this.remainingLength() > 0) {
+        const len = this.remainingLength()
+        buffer.set(this.buffer.subarray(this.pointer, this.pointer + len), index)
+        index += len
+        this.pointer += len
+        this.pos += BigInt(len)
+        length -= len
+      }
+
+      while (length > 0) {
+        try {
+          await this.flush()
+        }
+        catch (error) {
+          if (this.error === IOError.END && index) {
+            return index
+          }
+          else {
+            throw error
+          }
+        }
+
+        const len = Math.min(this.endPointer - this.pointer, length)
+
+        buffer.set(this.buffer.subarray(this.pointer, this.pointer + len), index)
+
+        index += len
+        this.pointer += len
+        this.pos += BigInt(len)
+        length -= len
+      }
+      return index
+    }
+    else {
+      buffer.set(this.buffer.subarray(this.pointer, this.pointer + length), 0)
+      this.pointer += length
+      this.pos += BigInt(length)
+      return length
+    }
+  }
+
   public async peekBuffer(length: number): Promise<Uint8Array >
   public async peekBuffer<T extends Uint8ArrayInterface>(length: number, buffer: T): Promise<T>
   public async peekBuffer(length: number, buffer?: Uint8ArrayInterface): Promise<Uint8ArrayInterface> {
