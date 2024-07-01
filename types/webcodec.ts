@@ -178,17 +178,19 @@ declare interface AudioEncoderSupport {
   config: AudioDecoderConfig
 }
 
+declare interface EncodedAudioChunkMetadata {
+  decoderConfig?: {
+    codec: string
+    sampleRate: number
+    numberOfChannels: number
+    description?: WebCodecBufferSource
+  }
+}
+
 declare const AudioEncoder: {
   prototype: AudioEncoder
   new(init: {
-    output: (data: EncodedAudioChunk, metadata?: {
-      decoderConfig?: {
-        codec: string
-        sampleRate: number
-        numberOfChannels: number
-        description?: WebCodecBufferSource
-      }
-    }) => void,
+    output: (data: EncodedAudioChunk, metadata?: EncodedAudioChunkMetadata) => void,
     error: (error: Error) => void
   }): AudioEncoder
 
