@@ -124,7 +124,8 @@ function webpackBootstrapFunc (modules) {
       }
     }
     var self = typeof globalThis !== undefined ? globalThis : self
-    var chunkLoadingGlobal = self["webpackChunkAVPlayer"] = self["webpackChunkAVPlayer"] || [];
+    var exportName = 'LIBRARY_EXPORT_NAME'
+    var chunkLoadingGlobal = self["webpackChunk" + exportName] = self["webpackChunk" + exportName] || [];
     chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
     chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
   })();
@@ -289,6 +290,8 @@ export default function (moduleId: string, options: {
   return src + 'var ' + options.varName + '=(' + webpackBootstrapFunc.replace('ENTRY_MODULE', stringifyModuleId)
     // @ts-ignore
     .replace('ROOT_URL', __webpack_require__.p || '')
+    // @ts-ignore
+    .replace('LIBRARY_EXPORT_NAME', __LIBRARY_EXPORT_NAME__)
     // @ts-ignore
     .replace('LIB_NAME', __webpack_require__.u && __webpack_require__.u('') || '')
       + ')({' + requiredModules.main.map(function (id) {
