@@ -106,6 +106,22 @@ export default class BitReader {
     return this.pointer
   }
 
+  public skip(n: number) {
+    const byte = (n - (n % 8)) / 8
+
+    this.pointer += byte
+
+    const bitsLeft = n % 8
+
+    if (this.bitsLeft <= bitsLeft) {
+      this.pointer++
+      this.bitsLeft = 8 - (bitsLeft - this.bitsLeft)
+    }
+    else {
+      this.bitsLeft -= bitsLeft
+    }
+  }
+
   public flush() {
 
     if (!this.onFlush) {
