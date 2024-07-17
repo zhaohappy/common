@@ -59,6 +59,6 @@ export default class SafeFileIO extends FileIO {
   }
 
   get writeQueueSize() {
-    return this.commandQueue.length
+    return this.commandQueue?.length ?? 0
   }
 }
