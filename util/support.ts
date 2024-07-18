@@ -35,6 +35,8 @@ function supportedFeatures() {
 
   let thread = worker && shareArrayBuffer && atomics && proxy
 
+  let jspi = typeof WebAssembly.Suspending === 'function' && typeof WebAssembly.promising === 'function'
+
   // safari 低于 11 不支持
   if (browser.safari && !browser.checkVersion(browser.majorVersion, '11', true)) {
     wasm = false
@@ -79,6 +81,7 @@ function supportedFeatures() {
     offscreenCanvas,
     workerMSE,
     webAssemblyGlobal,
+    jspi,
     proxy,
     simd: (browser.chrome || browser.newEdge) && browser.checkVersion(browser.majorVersion, '91', true)
       || browser.firefox && browser.checkVersion(browser.majorVersion, '89', true)

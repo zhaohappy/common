@@ -88,6 +88,10 @@ interface MediaSource {
   handle?: MediaSource
 }
 
-// interface Atomics {
-//   waitAsync?: (typedArray: Int32Array, index: number, value: number, timeout?: number) => Promise<'ok' | 'not-equal' | 'timed-out'>
-// }
+declare namespace WebAssembly {
+  const Suspending: {
+    prototype: Object
+    new<T extends (...args: any[]) => any>(fn: T): T
+  }
+  function promising<T extends (...args: any[]) => any>(fn: T): (...args: Parameters<T>) => Promise<ReturnType<T>>
+}
