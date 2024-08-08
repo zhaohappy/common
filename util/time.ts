@@ -1,6 +1,11 @@
 
 export function hhColonDDColonSSDotMill2Int64(time: string) {
   time = time.trim()
+
+  if (!time) {
+    return -1n
+  }
+
   let list = time.split(':')
 
   let ts = 0n
@@ -19,6 +24,11 @@ export function hhColonDDColonSSDotMill2Int64(time: string) {
 
 export function hhColonDDColonSSCommaMill2Int64(time: string) {
   time = time.trim()
+
+  if (!time) {
+    return -1n
+  }
+
   let list = time.split(':')
 
   let ts = 0n
