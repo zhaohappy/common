@@ -276,3 +276,13 @@ export function binarySearch<T>(array: T[], callback: (item: T) => -1 | 0 | 1) {
   }
   return index
 }
+
+export function sortInsert<T>(array: T[], item: T, callback: (item: T) => -1 | 0 | 1) {
+  const index = binarySearch(array, callback)
+  if (index > -1) {
+    array.splice(index, 0, item)
+  }
+  else {
+    array.push(item)
+  }
+}
