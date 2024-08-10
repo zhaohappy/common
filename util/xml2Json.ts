@@ -1,9 +1,4 @@
-/**
- * from https://github.com/hendt/xml2json
- * MIT License
- * 
- * 修复属性之间没有空格无法解析的问题
- */
+import * as array from './array'
 
 type Options = {
   aloneValueName?: string
@@ -13,59 +8,15 @@ const defaultOptions: Options = {
   aloneValueName: '_@attribute'
 }
 
-/**
-* Main function. Clears the given xml and then starts the recursion
-*/
-export default function xml2json(xmlStr: string, options = defaultOptions) {
-  const opt = {...defaultOptions, ...options} as Required<Options>
-  xmlStr = cleanXML(xmlStr, opt.aloneValueName)
-  return xml2jsonRecurse(xmlStr, opt)
+interface StackItem {
+  obj: Record<string, any>
+  tag: string
+  start: number
 }
 
-/**
-* Recursive function that creates a JSON object with a given XML string.
-*
-*/
-function xml2jsonRecurse(xmlStr: string, options: Required<Options>) {
-  const obj: any = {}
-  let startTagMatch: RegExpMatchArray
-  while ((startTagMatch = xmlStr.match(/<[^\/][^>]*>/))) {
-    let openingTag = startTagMatch[0]
-    let tagName = openingTag.substring(1, openingTag.length - 1)
-    let indexClosingTag = xmlStr.indexOf(openingTag.replace('<', '</'))
+const splitChar = [' ', '/', '"', '\'', '<', '>']
 
-    // account for case where additional information in the opening tag
-    let closingTagMatch: RegExpMatchArray
-    if (indexClosingTag == -1 && (closingTagMatch = openingTag.match(/[^<][\S+$]*/))) {
-      tagName = closingTagMatch[0]
-      indexClosingTag = xmlStr.indexOf('</' + tagName)
-      if (indexClosingTag == -1) {
-        indexClosingTag = xmlStr.indexOf('<\\/' + tagName)
-      }
-    }
-    let innerSubstring = xmlStr.substring(openingTag.length, indexClosingTag)
-    const tempVal = innerSubstring.match(/<[^\/][^>]*>/) ? xml2json(innerSubstring, options) : innerSubstring
-
-    // account for array or obj
-    if (obj[tagName] === undefined) {
-      obj[tagName] = tempVal
-    }
-    else if (Array.isArray(obj[tagName])) {
-      obj[tagName].push(tempVal)
-    }
-    else {
-      obj[tagName] = [obj[tagName], tempVal]
-    }
-    xmlStr = xmlStr.substring(openingTag.length * 2 + 1 + innerSubstring.length)
-  }
-  return obj
-}
-
-/**
-* Removes some characters that would break the recursive function.
-*
-*/
-function cleanXML(xmlStr: string, aloneValueName: string) {
+export default function xml2Json(xmlStr: string, options = defaultOptions) {
   // remove commented lines
   xmlStr = xmlStr.replace(/<!--[\s\S]*?-->/g, '')
   // replace special characters
@@ -75,104 +26,228 @@ function cleanXML(xmlStr: string, aloneValueName: string) {
   // delete docType tags
   xmlStr = xmlStr.replace(/<\?[^>]*\?>/g, '')
 
-  // replace self closing tags
-  xmlStr = replaceSelfClosingTags(xmlStr)
-  // replace the alone tags values
-  xmlStr = replaceAloneValues(xmlStr, aloneValueName)
-  // replace attributes
-  xmlStr = replaceAttributes(xmlStr)
+  const stack: StackItem[] = []
+  let pos = 0
 
-  return xmlStr
-}
-
-/**
-* Replaces all the self closing tags with attributes with another tag containing its attribute as a property.
-* The function works if the tag contains multiple attributes.
-* Example : '<tagName attrName="attrValue" />' becomes
-*           '<tagName><attrName>attrValue</attrName></tagName>'
-*/
-function replaceSelfClosingTags(xmlStr: string) {
-  const selfClosingTags = xmlStr.match(/<[^/][^>]*\/>/g)
-  if (!selfClosingTags) {
-    return xmlStr
-  }
-
-  for (let i = 0; i < selfClosingTags.length; i++) {
-    const oldTag = selfClosingTags[i]
-    const match = oldTag.match(/[^<][\S+$]*/)
-    if (match) {
-      const tagName = match[0]
-      const closingTag = '</' + tagName + '>'
-      const newTag = extractAttributeValue(tagName, oldTag) + closingTag
-      xmlStr = xmlStr.replace(oldTag, newTag)
+  function gotoToken(token: string) {
+    while (pos < xmlStr.length) {
+      if (xmlStr[pos] === token) {
+        return true
+      }
+      pos++
     }
-  }
-  return xmlStr
-}
-
-/**
-*  Replaces all the tags with attributes and a value with a new tag.
-*
-*  Example : '<tagName attrName="attrValue">tagValue</tagName>' becomes
-*  '<tagName><attrName>attrValue</attrName><_@attribute>tagValue</_@attribute></tagName>'
-*
-*/
-function replaceAloneValues(xmlStr: string, aloneValueName: string) {
-  const tagsWithAttributesAndValue = xmlStr.match(/<[^\/][^>][^<]+\s+.[^<]+[=][^<]+>([^<]+)/g)
-  if (!tagsWithAttributesAndValue) {
-    return xmlStr
-  }
-  for (let i = 0; i < tagsWithAttributesAndValue.length; i++) {
-    const oldTag = tagsWithAttributesAndValue[i]
-    const oldTagName = oldTag.substring(0, oldTag.indexOf('>') + 1)
-    const oldTagValue = oldTag.substring(oldTag.indexOf('>') + 1)
-
-    const newTag = oldTagName + '<' + aloneValueName + '>' + oldTagValue + '</' + aloneValueName + '>'
-
-    xmlStr = xmlStr.replace(oldTag, newTag)
-  }
-  return xmlStr
-}
-
-function extractAttributeValue(tagName: string, oldTag: string) {
-  let newTag = '<' + tagName + '>'
-  const attrs = oldTag.match(/([^"'\s]+)\s*=\s*((?:"[^"]+")|(?:'[^']+'))/g)
-  if (!attrs) {
-    return newTag
+    return false
   }
 
-  for (let j = 0; j < attrs.length; j++) {
-    const attr = attrs[j]
-    const attrName = attr.substring(0, attr.indexOf('=')).trim()
-    const quote = attr[attr.length - 1]
-    const attrValue = attr.substring(attr.indexOf(quote) + 1, attr.lastIndexOf(quote))
-
-    newTag += '<' + attrName + '>' + attrValue + '</' + attrName + '>'
+  function readIdentity() {
+    skipSpace()
+    let key = ''
+    while (pos < xmlStr.length) {
+      if (array.has(splitChar, xmlStr[pos])) {
+        break
+      }
+      key += xmlStr[pos]
+      pos++
+    }
+    return key
   }
-  return newTag
-}
 
-/**
-* Replaces all the tags with attributes with another tag containing its attribute as a property.
-* The function works if the tag contains multiple attributes.
-*
-* Example : '<tagName attrName="attrValue"></tagName>' becomes '<tagName><attrName>attrValue</attrName></tagName>'
-*
-*/
-function replaceAttributes(xmlStr: string) {
-  const tagsWithAttributes = xmlStr.match(/<[^\/><]\S+\s+[^<]+[=][^<]+>/g)
-  if (!tagsWithAttributes) {
-    return xmlStr
-  }
-  for (let i = 0; i < tagsWithAttributes.length; i++) {
-    const oldTag = tagsWithAttributes[i]
-    const match = oldTag.match(/[^<]\S*/)
-    if (match) {
-      const tagName = match[0]
-      const newTag = extractAttributeValue(tagName, oldTag)
-      xmlStr = xmlStr.replace(oldTag, newTag)
+  function skipSpace() {
+    while (pos < xmlStr.length) {
+      if (!/\s|\r|\n/.test(xmlStr[pos])) {
+        break
+      }
+      pos++
     }
   }
 
-  return xmlStr
+  function readAttrValue() {
+    if (pos >= xmlStr.length) {
+      return true
+    }
+    skipSpace()
+    let end = /\s/
+    if (xmlStr[pos] === '"' || xmlStr[pos] == '\'') {
+      pos++
+      end = /"|'/
+    }
+    let value = ''
+    while (pos < xmlStr.length) {
+      if (end.test(xmlStr[pos])) {
+        pos++
+        break
+      }
+      value += xmlStr[pos]
+      pos++
+    }
+    return value
+  }
+
+  function addData(key: string, value: any) {
+    const item = stack[stack.length - 1]
+
+    if (!item) {
+      return
+    }
+
+    if (key !== options.aloneValueName && item.obj[options.aloneValueName] != null) {
+      item.obj[options.aloneValueName] = [item.obj[options.aloneValueName], {
+        tagName: key,
+        ...value
+      }]
+      return
+    }
+    if (item.obj[key] == null) {
+      item.obj[key] = value
+    }
+    else if (Array.isArray(item.obj[key])) {
+      item.obj[key].push(value)
+    }
+    else {
+      item.obj[key] = [item.obj[key], value]
+    }
+  }
+
+  function readAttr() {
+    while (true) {
+      skipSpace()
+
+      if (xmlStr[pos] === '>' || xmlStr[pos] === '/') {
+        break
+      }
+
+      let key = readIdentity()
+      if (!key) {
+        break
+      }
+
+      if (key[key.length - 1] === '=') {
+        key = key.substring(0, key.length - 1)
+      }
+      else {
+        gotoToken('=')
+        pos++
+      }
+
+      const value = readAttrValue()
+
+      addData(key, value)
+    }
+  }
+
+  function readText() {
+    skipSpace()
+    let text = ''
+    while (pos < xmlStr.length) {
+      if (xmlStr[pos] === '<') {
+        break
+      }
+      text += xmlStr[pos]
+      pos++
+    }
+    return text
+  }
+
+  function pop() {
+    while (xmlStr[pos] === '<') {
+      const now = pos
+      pos++
+      skipSpace()
+      if (xmlStr[pos] === '/') {
+        pos++
+        const tag = readIdentity()
+        if (tag === stack[stack.length - 1].tag) {
+          if (stack.length > 1) {
+            const item = stack.pop()
+            addData(item.tag, item.obj)
+          }
+          gotoToken('>')
+          pos++
+          skipSpace()
+        }
+        else {
+          stack.pop()
+          gotoToken('>')
+          pos++
+          skipSpace()
+        }
+      }
+      else {
+        pos = now
+        break
+      }
+    }
+  }
+
+  function readTag() {
+
+    if (pos >= xmlStr.length) {
+      return
+    }
+
+    let start = pos
+    skipSpace()
+
+    if (xmlStr[pos] !== '<') {
+      pos = start
+      addData(options.aloneValueName, readText())
+      pop()
+      return readTag()
+    }
+
+    let has = gotoToken('<')
+    if (!has) {
+      return
+    }
+
+    start = pos
+    pos++
+
+    const tag = readIdentity()
+
+    stack.push({
+      obj: {},
+      tag,
+      start
+    })
+
+    readAttr()
+
+    skipSpace()
+
+    // 自闭合 tag
+    if (xmlStr[pos] === '/') {
+      pos++
+      if (stack.length > 1) {
+        const item = stack.pop()
+        addData(item.tag, item.obj)
+      }
+      gotoToken('>')
+      pos++
+      pop()
+      return readTag()
+    }
+
+    has = gotoToken('>')
+    if (!has) {
+      return
+    }
+    pos++
+
+    skipSpace()
+
+    if (xmlStr[pos] !== '<') {
+      addData(options.aloneValueName, readText())
+      skipSpace()
+    }
+
+    pop()
+    readTag()
+  }
+
+  readTag()
+
+  return {
+    [stack[0].tag]: stack[0].obj
+  }
 }
