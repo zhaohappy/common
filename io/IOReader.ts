@@ -510,13 +510,15 @@ export default class IOReader implements BytesReader {
       }
     }
 
-    while (true) {
-      const next = await this.peekUint8()
-      if (next === 0x0a || next === 0x0d) {
-        await this.readUint8()
-      }
-      else {
-        break
+    let next = await this.peekUint8()
+    if (next === 0x0a || next === 0x0d) {
+      this.pointer++
+      if (next === 0x0d) {
+        next = await this.peekUint8()
+        // \r\n
+        if (next === 0x0a) {
+          this.pointer++
+        }
       }
     }
 
@@ -524,7 +526,14 @@ export default class IOReader implements BytesReader {
   }
   public async peekLine() {
     if (this.remainingLength() < this.size) {
-      await this.flush()
+      try {
+        await this.flush()
+      }
+      catch (error) {
+        if (this.error !== IOError.END) {
+          throw error 
+        }
+      }
     }
 
     let str = ''

@@ -480,13 +480,15 @@ export default class IOReaderSync implements BytesReaderSync {
       }
     }
 
-    while (true) {
-      const next = this.peekUint8()
-      if (next === 0x0a || next === 0x0d) {
-        this.readUint8()
-      }
-      else {
-        break
+    let next = this.peekUint8()
+    if (next === 0x0a || next === 0x0d) {
+      this.pointer++
+      if (next === 0x0d) {
+        next = this.peekUint8()
+        // \r\n
+        if (next === 0x0a) {
+          this.pointer++
+        }
       }
     }
 
