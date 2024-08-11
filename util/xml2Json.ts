@@ -29,6 +29,31 @@ export default function xml2Json(xmlStr: string, options = defaultOptions) {
   const stack: StackItem[] = []
   let pos = 0
 
+  function addData(key: string, value: any) {
+    const item = stack[stack.length - 1]
+
+    if (!item) {
+      return
+    }
+
+    if (key !== options.aloneValueName && item.obj[options.aloneValueName] != null) {
+      item.obj[options.aloneValueName] = [item.obj[options.aloneValueName], {
+        tagName: key,
+        ...value
+      }]
+      return
+    }
+    if (item.obj[key] == null) {
+      item.obj[key] = value
+    }
+    else if (Array.isArray(item.obj[key])) {
+      item.obj[key].push(value)
+    }
+    else {
+      item.obj[key] = [item.obj[key], value]
+    }
+  }
+
   function gotoToken(token: string) {
     while (pos < xmlStr.length) {
       if (xmlStr[pos] === token) {
@@ -61,15 +86,21 @@ export default function xml2Json(xmlStr: string, options = defaultOptions) {
     }
   }
 
+  const emptyEndReg = /\s/
+  const singleQuotation = /'/
+  const doubleQuotation = /"/
+
   function readAttrValue() {
     if (pos >= xmlStr.length) {
       return true
     }
     skipSpace()
-    let end = /\s/
+    // 默认属性值结束符为空格
+    let end = emptyEndReg
     if (xmlStr[pos] === '"' || xmlStr[pos] == '\'') {
+      // 属性值是引号开始则结束符也是引号
+      end = xmlStr[pos] === '"' ? doubleQuotation : singleQuotation
       pos++
-      end = /"|'/
     }
     let value = ''
     while (pos < xmlStr.length) {
@@ -83,44 +114,17 @@ export default function xml2Json(xmlStr: string, options = defaultOptions) {
     return value
   }
 
-  function addData(key: string, value: any) {
-    const item = stack[stack.length - 1]
-
-    if (!item) {
-      return
-    }
-
-    if (key !== options.aloneValueName && item.obj[options.aloneValueName] != null) {
-      item.obj[options.aloneValueName] = [item.obj[options.aloneValueName], {
-        tagName: key,
-        ...value
-      }]
-      return
-    }
-    if (item.obj[key] == null) {
-      item.obj[key] = value
-    }
-    else if (Array.isArray(item.obj[key])) {
-      item.obj[key].push(value)
-    }
-    else {
-      item.obj[key] = [item.obj[key], value]
-    }
-  }
-
   function readAttr() {
     while (true) {
       skipSpace()
-
+      // 判断标签属性结束
       if (xmlStr[pos] === '>' || xmlStr[pos] === '/') {
         break
       }
-
       let key = readIdentity()
       if (!key) {
         break
       }
-
       if (key[key.length - 1] === '=') {
         key = key.substring(0, key.length - 1)
       }
@@ -128,13 +132,12 @@ export default function xml2Json(xmlStr: string, options = defaultOptions) {
         gotoToken('=')
         pos++
       }
-
       const value = readAttrValue()
-
       addData(key, value)
     }
   }
 
+  // innerText 当前位置到 < 之前
   function readText() {
     skipSpace()
     let text = ''
@@ -148,7 +151,10 @@ export default function xml2Json(xmlStr: string, options = defaultOptions) {
     return text
   }
 
+
   function pop() {
+    // 处理 </> 跳出当前 tag
+    // 若是 <xx 则是子标签，进入下一次处理 
     while (xmlStr[pos] === '<') {
       const now = pos
       pos++
@@ -180,14 +186,13 @@ export default function xml2Json(xmlStr: string, options = defaultOptions) {
   }
 
   function readTag() {
-
     if (pos >= xmlStr.length) {
       return
     }
 
     let start = pos
     skipSpace()
-
+    // innerText 的后面部分，中间被标签分割出现这种情况，将其加入 context 中
     if (xmlStr[pos] !== '<') {
       pos = start
       addData(options.aloneValueName, readText())
@@ -204,7 +209,6 @@ export default function xml2Json(xmlStr: string, options = defaultOptions) {
     pos++
 
     const tag = readIdentity()
-
     stack.push({
       obj: {},
       tag,
@@ -212,9 +216,7 @@ export default function xml2Json(xmlStr: string, options = defaultOptions) {
     })
 
     readAttr()
-
     skipSpace()
-
     // 自闭合 tag
     if (xmlStr[pos] === '/') {
       pos++
@@ -235,12 +237,11 @@ export default function xml2Json(xmlStr: string, options = defaultOptions) {
     pos++
 
     skipSpace()
-
+    // 检查有 innerText 内容
     if (xmlStr[pos] !== '<') {
       addData(options.aloneValueName, readText())
       skipSpace()
     }
-
     pop()
     readTag()
   }
