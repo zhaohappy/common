@@ -11,7 +11,7 @@ import * as object from '../util/object'
  * 把查询字符串解析成对象
  * @param queryStr 
  */
-export function parseQuery(queryStr: string, separator: string = '&'): Partial<{}> {
+export function parseQuery(queryStr: string, separator: string = '&'): Record<string, string> {
   const result = {}
   if (is.string(queryStr) && queryStr.indexOf('=') >= 0) {
     let firstChar = queryStr.charAt(0)
@@ -94,22 +94,22 @@ export function mixin(query: Record<string, any>, applyHash: boolean, url?: stri
   let scheme = parse(url)
   let params = parseQuery(applyHash ? scheme.hash : scheme.search)
   object.extend(params, query)
-  params = object.param(params)
+  let paramStr = object.param(params)
 
   url = scheme.origin + scheme.pathname
 
   if (applyHash) {
     url += scheme.search
   }
-  else if (params) {
-    url += '?' + params
+  else if (paramStr) {
+    url += '?' + paramStr
   }
 
   if (!applyHash) {
     url += scheme.hash
   }
-  else if (params) {
-    url += '#' + params
+  else if (paramStr) {
+    url += '#' + paramStr
   }
 
   return url
