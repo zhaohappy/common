@@ -5,7 +5,7 @@ export default class SafeFileIO extends FileIO {
 
   private commandQueue: CommandQueue
 
-  constructor(handler: FileHandler, append: boolean = false) {
+  constructor(handler: FileHandle, append: boolean = false) {
     super(handler, append)
     this.commandQueue = new CommandQueue()
   }

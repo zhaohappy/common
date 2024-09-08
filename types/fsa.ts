@@ -9,9 +9,15 @@ declare interface FileSystemWritableFileStream {
   close(): Promise<any>
 }
 
-declare interface FileHandler {
+declare interface FileHandle extends FileSystemHandle {
   createWritable(options?: {
     keepExistingData?: boolean
   }): Promise<FileSystemWritableFileStream>
   getFile(): Promise<File>
+}
+
+declare interface DirectoryHandle  extends FileSystemHandle {
+  getFileHandle(name: string): Promise<FileHandle>
+  getDirectoryHandle(name: string): Promise<DirectoryHandle>
+  [Symbol.iterator](): IterableIterator<FileSystemHandle>
 }

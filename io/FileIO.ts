@@ -3,7 +3,7 @@ const RESIZE_CHUNK_SIZE = 1024 * 1024 * 5
 
 export default class FileIO {
 
-  private handler: FileHandler
+  private handler: FileHandle
 
   private file: File
 
@@ -26,7 +26,7 @@ export default class FileIO {
     reject: (data?: any) => void,
   }
 
-  constructor(handler: FileHandler, append: boolean = false) {
+  constructor(handler: FileHandle, append: boolean = false) {
     this.handler = handler
     this.append = append
     this.readied = false
