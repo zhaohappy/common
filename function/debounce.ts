@@ -16,16 +16,23 @@ import { ParamType } from '../types/advanced'
  * @param immediate 是否立即触发
  * @return 节流函数
  */
-export default function debounce<T extends Fn>(fn: T, delay: number, immediate?: boolean): T {
+export default function debounce<T extends Fn>(fn: T, delay: number, immediate?: boolean, last: boolean = false): T {
 
   let timer: any
+  let args: any
+
   return function () {
 
     let context = this
 
-    if (!timer) {
+    if (last) {
+      args = array.toArray(arguments)
+    }
 
-      const args = array.toArray(arguments)
+    if (!timer) {
+      if (!last) {
+        args = array.toArray(arguments)
+      }
       if (immediate) {
         execute(fn, context, args as ParamType<T>)
       }
