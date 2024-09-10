@@ -73,6 +73,10 @@ export default class CommandQueue {
     })
   }
 
+  public clearPadding() {
+    this.queue.length = 0
+  }
+
   get length() {
     return this.queue.length
   }
