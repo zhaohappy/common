@@ -330,3 +330,14 @@ export function update(obj1: Object, obj2: Object) {
 
   return obj1
 }
+
+/**
+ * 反转 object 的 key value
+ */
+export function reverse(obj: Record<number | string | symbol, number | string | symbol>) {
+  const result = {}
+  each(obj, (value, key) => {
+    result[value] = key
+  })
+  return result
+}
