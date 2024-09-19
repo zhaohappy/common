@@ -95,3 +95,17 @@ declare namespace WebAssembly {
   }
   function promising<T extends (...args: any[]) => any>(fn: T): (...args: Parameters<T>) => Promise<ReturnType<T>>
 }
+
+interface DocumentPictureInPictureOptions {
+  disallowReturnToOpener?: boolean
+  width?: number
+  height?: number
+}
+
+interface DocumentPictureInPicture {
+  onenter: Function | null
+  window: Window | null
+  requestWindow: (options: DocumentPictureInPictureOptions) => Promise<Window>
+}
+
+declare const documentPictureInPicture: DocumentPictureInPicture
