@@ -607,6 +607,7 @@ export default class IOReaderSync implements BytesReaderSync {
       }
       this.endPointer += len
     }
+    this.error = 0
   }
 
   public seek(pos: bigint, force: boolean = false, flush: boolean = true) {
@@ -691,10 +692,16 @@ export default class IOReaderSync implements BytesReaderSync {
       return this.fileSize_
     }
     if (!this.onSize) {
-      this.error = IOError.INVALID_OPERATION
-      logger.fatal('IOReader error, fileSize failed because of no onSize callback')
+      logger.warn('IOReader error, fileSize failed because of no onSize callback')
+      return 0n
     }
-    this.fileSize_ = this.onSize()
+    try {
+      this.fileSize_ = this.onSize()
+    }
+    catch (error) {
+      logger.warn(`IOReader error, call fileSize failed: ${error}`)
+      this.fileSize_ = 0n
+    }
     return this.fileSize_
   }
 

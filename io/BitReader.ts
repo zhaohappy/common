@@ -102,8 +102,16 @@ export default class BitReader {
     return this.endPointer - this.pointer
   }
 
+  public getBitLeft() {
+    return this.bitsLeft
+  }
+
   public getPos() {
     return this.pointer
+  }
+
+  public backToPos(pos: number) {
+    this.pointer = pos
   }
 
   public skip(n: number) {
