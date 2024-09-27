@@ -1,3 +1,4 @@
+import isWorker from '../function/isWorker'
 import browser from './browser'
 
 
@@ -16,7 +17,7 @@ function supportedFeatures() {
 
   let arrayBuffer = typeof ArrayBuffer === 'function'
 
-  let atomics = typeof Atomics === 'object'
+  let atomics = typeof Atomics === 'object' && Atomics[Symbol.toStringTag] === 'Atomics'
 
   let audioContext = typeof AudioContext === 'function' || typeof webkitAudioContext === 'function'
   let audioWorklet = typeof AudioWorklet === 'function'
@@ -33,7 +34,7 @@ function supportedFeatures() {
 
   let proxy = typeof Proxy === 'function'
 
-  let thread = worker && shareArrayBuffer && atomics && proxy
+  let thread = (worker || isWorker()) && shareArrayBuffer && atomics && proxy
 
   let jspi = typeof WebAssembly.Suspending === 'function' && typeof WebAssembly.promising === 'function'
 
