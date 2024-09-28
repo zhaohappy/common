@@ -36,7 +36,7 @@ export default class IntervalQueueTask {
     }, timeout, interval)
   }
 
-  public push<T extends (() => void)>(task: T) {
+  public push<T extends(() => void)>(task: T) {
     if (!is.func(task)) {
       throw new TypeError('task must be a function')
     }
@@ -54,7 +54,7 @@ export default class IntervalQueueTask {
         this.timer.start()
       }
     }
-    
+
   }
 
   public end() {

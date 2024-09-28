@@ -139,18 +139,18 @@ export const keyDelete: Record<number, string> = reverse(deleteKey)
 export const keyFunction: Record<number, string> = reverse(functionKey)
 export const keyCombination: Record<number, string> = reverse(combinationKey)
 
-export function isCharKey (keyCode: number) {
+export function isCharKey(keyCode: number) {
   return keyCode in keyChar
 }
 
-export function isDeleteKey (keyCode: number) {
+export function isDeleteKey(keyCode: number) {
   return keyCode in keyDelete
 }
 
-export function isFunctionKey (keyCode: number) {
+export function isFunctionKey(keyCode: number) {
   return keyCode in keyFunction
 }
 
-export function isCombinationKey (keyCode: number) {
+export function isCombinationKey(keyCode: number) {
   return keyCode in keyCombination
 }

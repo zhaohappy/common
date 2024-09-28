@@ -531,7 +531,7 @@ export default class IOReader implements BytesReader {
       }
       catch (error) {
         if (this.error !== IOError.END) {
-          throw error 
+          throw error
         }
       }
     }
