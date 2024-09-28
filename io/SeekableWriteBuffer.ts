@@ -1,6 +1,9 @@
 import concatTypeArray from '../function/concatTypeArray'
 
-export default class SeekableWriteBufferQueue {
+/**
+ * 可 seek 的 Buffer，可当做文件的一段
+ */
+export default class SeekableWriteBuffer {
   private queue: Uint8Array[]
   private pos: bigint
 
@@ -18,7 +21,12 @@ export default class SeekableWriteBufferQueue {
     this.pos = 0n
   }
 
-  public push(buffer: Uint8Array) {
+  /**
+   * 当前位置写入数据
+   * 
+   * @param buffer 
+   */
+  public write(buffer: Uint8Array) {
     if (this.pos === this.endPos) {
       this.queue.push(buffer)
       this.endPos += BigInt(buffer.length)
@@ -71,6 +79,12 @@ export default class SeekableWriteBufferQueue {
     }
   }
 
+  /**
+   * seek 到指定位置
+   * 
+   * @param pos 
+   * @returns 
+   */
   public seek(pos: bigint) {
     if (pos < this.startPos || pos > this.endPos) {
       return false
@@ -97,6 +111,11 @@ export default class SeekableWriteBufferQueue {
     return true
   }
 
+  /**
+   * 写出缓存的所有数据
+   * 
+   * @returns 
+   */
   public flush() {
     this.startPos = this.endPos
     this.pos = this.endPos
@@ -109,6 +128,9 @@ export default class SeekableWriteBufferQueue {
     return buffer
   }
 
+  /**
+   * 已缓存的数据数
+   */
   get size() {
     return this.queue.length
   }

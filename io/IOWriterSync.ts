@@ -267,10 +267,9 @@ export default class IOWriterSync implements BytesWriterSync {
     return buffer.length
   }
 
-  public encodeString(str: string) {
-    return text.encode(str)
-  }
-
+  /**
+   * 将缓冲区中数据写出
+   */
   public flush() {
     if (!this.onFlush) {
       this.error = IOError.INVALID_OPERATION
@@ -287,6 +286,11 @@ export default class IOWriterSync implements BytesWriterSync {
     this.pointer = 0
   }
 
+  /**
+   * 将缓冲区中数据写出到指定位置
+   * 
+   * @param pos 
+   */
   public flushToPos(pos: bigint) {
     if (!this.onFlush) {
       this.error = IOError.INVALID_OPERATION
@@ -302,6 +306,11 @@ export default class IOWriterSync implements BytesWriterSync {
     this.pointer = 0
   }
 
+  /**
+   * seek 到指定位置
+   * 
+   * @param pos 
+   */
   public seek(pos: bigint) {
     if (!this.onSeek) {
       this.error = IOError.INVALID_OPERATION
@@ -320,38 +329,71 @@ export default class IOWriterSync implements BytesWriterSync {
     this.pos = pos
   }
 
+  /**
+   * 在当前缓冲区映射区间内 seek
+   * 
+   * @param pos 
+   */
   public seekInline(pos: number) {
     const pointer = this.pointer
     this.pointer = Math.max(0, Math.min(this.size, pos))
     this.pos += BigInt(this.pointer - pointer)
   }
 
+  /**
+   * 跳过指定长度
+   * 
+   * @param length 
+   */
   public skip(length: number) {
     const pointer = this.pointer
     this.pointer = Math.min(this.size, this.pointer + length)
     this.pos += BigInt(this.pointer - pointer)
   }
 
+  /**
+   * 回退指定长度，不能大于 pointer 大小
+   * 
+   * @param length 
+   */
   public back(length: number) {
     const pointer = this.pointer
     this.pointer = Math.max(0, this.pointer - length)
     this.pos += BigInt(this.pointer - pointer)
   }
 
+  /**
+   * 获取缓冲区
+   * 
+   * @returns 
+   */
   public getBuffer() {
     return this.buffer.subarray(0, this.pointer)
   }
 
+  /**
+   * 设置读取是小端还是大端
+   * 
+   * @param bigEndian 
+   */
   public setEndian(bigEndian: boolean) {
     this.littleEndian = !bigEndian
   }
 
+  /**
+   * 重置 writer
+   */
   public reset() {
     this.pointer = 0
     this.pos = 0n
     this.error = 0
   }
 
+  /**
+   * 获取缓冲区长度
+   * 
+   * @returns 
+   */
   public getBufferSize() {
     return this.size
   }

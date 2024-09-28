@@ -85,7 +85,11 @@ export default class IOReaderSync implements BytesReaderSync {
     this.pos++
     return value
   }
-
+  /**
+   * 读取 8 位无符号整数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
   public peekUint8() {
     if (this.remainingLength() < 1) {
       this.flush(1)
@@ -107,7 +111,11 @@ export default class IOReaderSync implements BytesReaderSync {
     this.pos += 2n
     return value
   }
-
+  /**
+   * 读取 16 位无符号整数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
   public peekUint16() {
     if (this.remainingLength() < 2) {
       this.flush(2)
@@ -125,7 +133,11 @@ export default class IOReaderSync implements BytesReaderSync {
     const low = this.readUint8()
     return high << 8 | low
   }
-
+  /**
+   * 读取 24 位无符号整数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
   public peekUint24() {
     if (this.remainingLength() < 3) {
       this.flush(3)
@@ -157,7 +169,11 @@ export default class IOReaderSync implements BytesReaderSync {
     this.pos += 4n
     return value
   }
-
+  /**
+   * 读取 32 位无符号整数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
   public peekUint32() {
     if (this.remainingLength() < 4) {
       this.flush(4)
@@ -179,7 +195,11 @@ export default class IOReaderSync implements BytesReaderSync {
     this.pos += 8n
     return value
   }
-
+  /**
+   * 读取 64 位无符号整数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
   public peekUint64() {
     if (this.remainingLength() < 8) {
       this.flush(8)
@@ -201,7 +221,11 @@ export default class IOReaderSync implements BytesReaderSync {
     this.pos++
     return value
   }
-
+  /**
+   * 读取 8 位有符号整数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
   public peekInt8() {
     if (this.remainingLength() < 1) {
       this.flush(1)
@@ -223,7 +247,11 @@ export default class IOReaderSync implements BytesReaderSync {
     this.pos += 2n
     return value
   }
-
+  /**
+   * 读取 16 位有符号整数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
   public peekInt16() {
     if (this.remainingLength() < 2) {
       this.flush(2)
@@ -245,7 +273,11 @@ export default class IOReaderSync implements BytesReaderSync {
     this.pos += 4n
     return value
   }
-
+  /**
+   * 读取 32 位有符号整数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
   public peekInt32() {
     if (this.remainingLength() < 4) {
       this.flush(4)
@@ -267,7 +299,11 @@ export default class IOReaderSync implements BytesReaderSync {
     this.pos += 8n
     return value
   }
-
+  /**
+   * 读取 64 位有符号整数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
   public peekInt64() {
     if (this.remainingLength() < 8) {
       this.flush(8)
@@ -289,7 +325,11 @@ export default class IOReaderSync implements BytesReaderSync {
     this.pos += 4n
     return value
   }
-
+  /**
+   * 读取单精度浮点数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
   public peekFloat() {
     if (this.remainingLength() < 4) {
       this.flush(4)
@@ -311,7 +351,11 @@ export default class IOReaderSync implements BytesReaderSync {
     this.pos += 8n
     return value
   }
-
+  /**
+   * 读取双精度浮点数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
   public peekDouble() {
     if (this.remainingLength() < 8) {
       this.flush(8)
@@ -333,7 +377,12 @@ export default class IOReaderSync implements BytesReaderSync {
     }
     return hexStr
   }
-
+  /**
+   * 读取指定长度的字节，并以 16 进制字符串返回（不会移动读取指针位置）
+   * 
+   * @param length 默认 1
+   * @returns 
+   */
   public peekHex(length: number = 1) {
 
     if (length > this.size) {
@@ -361,7 +410,11 @@ export default class IOReaderSync implements BytesReaderSync {
   }
 
   /**
-   * 读取指定长度的二进制 buffer 数据
+   * 读取指定长度的二进制数据，不够抛错
+   * 
+   * 第二个参数可传入预先分配的 buffer
+   * 
+   * 返回读取的 Uint8Array
    * 
    * @param length 
    * @returns 
@@ -411,7 +464,12 @@ export default class IOReaderSync implements BytesReaderSync {
 
     return buffer
   }
-
+  /**
+   * 读取指定长度的二进制 buffer 数据（不会移动读取指针位置）
+   * 
+   * @param length 
+   * @returns 
+   */
   public peekBuffer(length: number): Uint8Array
   public peekBuffer<T extends Uint8ArrayInterface>(length: number, buffer: T): T
   public peekBuffer(length: number, buffer?: Uint8ArrayInterface): Uint8ArrayInterface {
@@ -439,6 +497,58 @@ export default class IOReaderSync implements BytesReaderSync {
   }
 
   /**
+   * 读取最多 length 字节的数据到指定 buffer，返回已写入的字节长度
+   * 
+   * @param length 
+   * @param buffer 
+   * @returns 
+   */
+  public readToBuffer(length: number, buffer: Uint8ArrayInterface): number {
+    if (this.remainingLength() < length) {
+      let index = 0
+
+      if (this.remainingLength() > 0) {
+        const len = this.remainingLength()
+        buffer.set(this.buffer.subarray(this.pointer, this.pointer + len), index)
+        index += len
+        this.pointer += len
+        this.pos += BigInt(len)
+        length -= len
+      }
+
+      while (length > 0) {
+        try {
+          this.flush()
+        }
+        catch (error) {
+          if (this.error === IOError.END && index) {
+            return index
+          }
+          else {
+            throw error
+          }
+        }
+
+        const len = Math.min(this.endPointer - this.pointer, length)
+
+        buffer.set(this.buffer.subarray(this.pointer, this.pointer + len), index)
+
+        index += len
+        this.pointer += len
+        this.pos += BigInt(len)
+        length -= len
+      }
+      return index
+    }
+    else {
+      buffer.set(this.buffer.subarray(this.pointer, this.pointer + length), 0)
+      this.pointer += length
+      this.pos += BigInt(length)
+      return length
+    }
+  }
+
+  /**
    * 读取指定长度的字符串
    * 
    * @param length 默认 1
@@ -448,6 +558,12 @@ export default class IOReaderSync implements BytesReaderSync {
     const buffer = this.readBuffer(length)
     return text.decode(buffer)
   }
+  /**
+   * 读取指定长度的字符串
+   * 
+   * @param length 默认 1
+   * @returns 
+   */
   public peekString(length: number = 1) {
     const buffer = this.peekBuffer(length)
     return text.decode(buffer)
@@ -494,7 +610,9 @@ export default class IOReaderSync implements BytesReaderSync {
 
     return str
   }
-
+  /**
+   * 读取一行字符
+   */
   public peekLine() {
     if (this.remainingLength() < this.size) {
       this.flush()
@@ -567,6 +685,12 @@ export default class IOReaderSync implements BytesReaderSync {
     return this.endPointer - this.pointer
   }
 
+  /**
+   * 重新填充剩余缓冲区
+   * 
+   * @param need 
+   * @returns 
+   */
   public flush(need: number = 0) {
 
     if (!this.onFlush) {
@@ -610,6 +734,15 @@ export default class IOReaderSync implements BytesReaderSync {
     this.error = 0
   }
 
+  /**
+   * 
+   * seek 到指定位置
+   * 
+   * @param pos 
+   * @param force false 时可以在目前的缓冲区内 seek，否则丢弃缓冲区内容重新填充指定位置的数据，默认 false
+   * @param flush 指定 seek 之后是否马上填充数据，否则只 seek 到目标位置，默认 true
+   * @returns 
+   */
   public seek(pos: bigint, force: boolean = false, flush: boolean = true) {
     if (!force) {
       const len = Number(pos - this.pos)
@@ -649,10 +782,18 @@ export default class IOReaderSync implements BytesReaderSync {
     }
   }
 
+  /**
+   * 获取缓冲区
+   */
   public getBuffer() {
     return this.buffer
   }
 
+  /**
+   * 写入数据到缓冲区
+   * 
+   * @param buffer 
+   */
   public appendBuffer(buffer: Uint8ArrayInterface) {
     if (this.size - this.endPointer >= buffer.length) {
       this.buffer.set(buffer, this.endPointer)
@@ -677,16 +818,29 @@ export default class IOReaderSync implements BytesReaderSync {
     }
   }
 
+  /**
+   * 重置 reader
+   */
   public reset() {
     this.pointer = this.endPointer = 0
     this.pos = 0n
     this.error = 0
   }
 
+  /**
+   * 设置读取是小端还是大端
+   * 
+   * @param bigEndian 
+   */
   public setEndian(bigEndian: boolean) {
     this.littleEndian = !bigEndian
   }
 
+  /**
+   * 获取源总字节长度
+   * 
+   * @returns 
+   */
   public fileSize() {
     if (this.fileSize_) {
       return this.fileSize_
@@ -705,10 +859,21 @@ export default class IOReaderSync implements BytesReaderSync {
     return this.fileSize_
   }
 
+  /**
+   * 获取缓冲区长度
+   * 
+   * @returns 
+   */
   public getBufferSize() {
     return this.size
   }
 
+  /**
+   * 连接到 ioWriter
+   * 
+   * @param ioWriter 
+   * @param length 
+   */
   public pipe(ioWriter: IOWriter, length?: number) {
     if (length) {
       if (this.remainingLength() < length) {

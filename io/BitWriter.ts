@@ -14,6 +14,8 @@ export default class BitWriter {
 
   private pointer: number
 
+  private pos: bigint
+
   private bitPointer: number
 
   private size: number
@@ -30,6 +32,7 @@ export default class BitWriter {
     this.bitPointer = 0
     this.size = size
     this.error = 0
+    this.pos = 0n
 
     this.buffer = new Uint8Array(this.size)
   }
@@ -56,6 +59,7 @@ export default class BitWriter {
 
     if (this.bitPointer === 8) {
       this.pointer++
+      this.pos++
       this.bitPointer = 0
     }
   }
@@ -80,6 +84,9 @@ export default class BitWriter {
     return this.size - this.pointer
   }
 
+  /**
+   * 写出缓冲区
+   */
   public flush() {
 
     if (!this.onFlush) {
@@ -107,23 +114,49 @@ export default class BitWriter {
     this.pointer = 0
   }
 
+  /**
+   * 对齐字节，当处在当前字节的第一个 bit 时不动，否则写入 0 直到下一个字节
+   */
   public padding() {
     while (this.bitPointer !== 0) {
       this.writeU1(0)
     }
   }
 
-  public clear() {
+  /**
+   * 重置缓冲区
+   */
+  public reset() {
     this.pointer = 0
     this.bitPointer = 0
     this.error = 0
+    this.pos = 0n
   }
 
+  /**
+   * 获取缓冲区
+   * 
+   * @returns 
+   */
   public getBuffer() {
     return this.buffer
   }
 
+  /**
+   * 获取当前写指针位置
+   * 
+   * @returns 
+   */
   public getPointer() {
     return this.pointer
+  }
+
+  /**
+   * 获取当前的绝对位置
+   * 
+   * @returns 
+   */
+  public getPos() {
+    return this.pos
   }
 }

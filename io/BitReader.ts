@@ -18,6 +18,8 @@ export default class BitReader {
 
   private endPointer: number
 
+  private pos: bigint
+
   public error: number
 
   public onFlush: (data: Uint8Array) => number
@@ -29,6 +31,7 @@ export default class BitReader {
   constructor(size: number = 1 * 1024 * 1024) {
     this.pointer = 0
     this.bitsLeft = 8
+    this.pos = 0n
 
     this.size = size
     this.endPointer = 0
@@ -38,7 +41,7 @@ export default class BitReader {
   }
 
   /**
-   * 不影响原读取操作的情况下，读取 1 个比特
+   * 读取 1 个比特（不会移动读取指针）
    */
   public peekU1() {
     let result = 0
@@ -57,7 +60,6 @@ export default class BitReader {
     result = (this.buffer[pointer] >> (bitsLeft - 1)) & 0x01
     return result
   }
-
   /**
    * 读取 1 个比特
    */
@@ -75,6 +77,7 @@ export default class BitReader {
     if (this.bitsLeft === 0) {
       this.pointer++
       this.bitsLeft = 8
+      this.pos++
     }
 
     return result
@@ -102,27 +105,58 @@ export default class BitReader {
     return this.endPointer - this.pointer
   }
 
+  /**
+   * 当前字节剩余的 bit 数
+   * 
+   * @returns 
+   */
   public getBitLeft() {
     return this.bitsLeft
   }
 
-  public getPos() {
+  /**
+   * 获取当前读取指针位置
+   * 
+   * @returns 
+   */
+  public getPointer() {
     return this.pointer
   }
 
-  public backToPos(pos: number) {
-    this.pointer = pos
+  /**
+   * 设置读取指针到指定位置
+   * 
+   * @param pointer 
+   */
+  public setPointer(pointer: number) {
+    this.pointer = pointer
   }
 
+  /**
+   * 返回当前的绝对位置
+   * 
+   * @returns 
+   */
+  public getPos() {
+    return this.pos
+  }
+
+  /**
+   * 跳过指定 bit 数
+   * 
+   * @param n 
+   */
   public skip(n: number) {
     const byte = (n - (n % 8)) / 8
 
     this.pointer += byte
+    this.pos += BigInt(byte)
 
     const bitsLeft = n % 8
 
     if (this.bitsLeft <= bitsLeft) {
       this.pointer++
+      this.pos++
       this.bitsLeft = 8 - (bitsLeft - this.bitsLeft)
     }
     else {
@@ -130,6 +164,9 @@ export default class BitReader {
     }
   }
 
+  /**
+   * 填充剩余缓冲区
+   */
   public flush() {
 
     if (!this.onFlush) {
@@ -139,6 +176,7 @@ export default class BitReader {
 
     if (this.bitsLeft === 0) {
       this.pointer++
+      this.pos++
     }
 
     if (this.size - this.remainingLength() <= 0) {
@@ -172,6 +210,11 @@ export default class BitReader {
     }
   }
 
+  /**
+   * 获取缓冲区
+   * 
+   * @returns 
+   */
   public getBuffer() {
     return this.buffer
   }
@@ -200,16 +243,24 @@ export default class BitReader {
     }
   }
 
-  public clear() {
+  /**
+   * 重置缓冲区
+   */
+  public reset() {
     this.pointer = this.endPointer = 0
     this.bitsLeft = 8
     this.error = 0
+    this.pos = 0n
   }
 
+  /**
+   * 对齐字节，当处在当前字节的第一个 bit 时不动，否则移动到下一个字节
+   */
   public skipPadding() {
     if (this.bitsLeft < 8) {
       this.bitsLeft = 8
       this.pointer++
+      this.pos++
     }
   }
 }

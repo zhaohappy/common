@@ -86,6 +86,11 @@ export default class IOReader implements BytesReader {
     this.pos++
     return value
   }
+  /**
+   * 读取 8 位无符号整数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
   public async peekUint8() {
     if (this.remainingLength() < 1) {
       await this.flush(1)
@@ -107,6 +112,11 @@ export default class IOReader implements BytesReader {
     this.pos += 2n
     return value
   }
+  /**
+   * 读取 16 位无符号整数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
   public async peekUint16() {
     if (this.remainingLength() < 2) {
       await this.flush(2)
@@ -127,6 +137,11 @@ export default class IOReader implements BytesReader {
     const low = await this.readUint8()
     return high << 8 | low
   }
+  /**
+   * 读取 24 位无符号整数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
   public async peekUint24() {
     if (this.remainingLength() < 3) {
       await this.flush(3)
@@ -158,6 +173,11 @@ export default class IOReader implements BytesReader {
     this.pos += 4n
     return value
   }
+  /**
+   * 读取 32 位无符号整数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
   public async peekUint32() {
     if (this.remainingLength() < 4) {
       await this.flush(4)
@@ -179,6 +199,11 @@ export default class IOReader implements BytesReader {
     this.pos += 8n
     return value
   }
+  /**
+   * 读取 64 位无符号整数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
   public async peekUint64() {
     if (this.remainingLength() < 8) {
       await this.flush(8)
@@ -200,6 +225,11 @@ export default class IOReader implements BytesReader {
     this.pos++
     return value
   }
+  /**
+   * 读取 8 位有符号整数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
   public async peekInt8() {
     if (this.remainingLength() < 1) {
       await this.flush(1)
@@ -221,6 +251,11 @@ export default class IOReader implements BytesReader {
     this.pos += 2n
     return value
   }
+  /**
+   * 读取 16 位有符号整数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
   public async peekInt16() {
     if (this.remainingLength() < 2) {
       await this.flush(2)
@@ -242,6 +277,11 @@ export default class IOReader implements BytesReader {
     this.pos += 4n
     return value
   }
+  /**
+   * 读取 32 位有符号整数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
   public async peekInt32() {
     if (this.remainingLength() < 4) {
       await this.flush(4)
@@ -264,6 +304,11 @@ export default class IOReader implements BytesReader {
     this.pos += 8n
     return value
   }
+  /**
+   * 读取 64 位有符号整数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
   public async peekInt64() {
     if (this.remainingLength() < 8) {
       await this.flush(8)
@@ -285,6 +330,11 @@ export default class IOReader implements BytesReader {
     this.pos += 4n
     return value
   }
+  /**
+   * 读取单精度浮点数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
   public async peekFloat() {
     if (this.remainingLength() < 4) {
       await this.flush(4)
@@ -306,6 +356,11 @@ export default class IOReader implements BytesReader {
     this.pos += 8n
     return value
   }
+  /**
+   * 读取双精度浮点数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
   public async peekDouble() {
     if (this.remainingLength() < 8) {
       await this.flush(8)
@@ -327,6 +382,12 @@ export default class IOReader implements BytesReader {
     }
     return hexStr
   }
+  /**
+   * 读取指定长度的字节，并以 16 进制字符串返回（不会移动读取指针位置）
+   * 
+   * @param length 默认 1
+   * @returns 
+   */
   public async peekHex(length: number = 1) {
 
     if (length > this.size) {
@@ -354,7 +415,11 @@ export default class IOReader implements BytesReader {
   }
 
   /**
-   * 读取指定长度的二进制 buffer 数据
+   * 读取指定长度的二进制数据，不够抛错
+   * 
+   * 第二个参数可传入预先分配的 buffer
+   * 
+   * 返回读取的 Uint8Array
    * 
    * @param length 
    * @returns 
@@ -400,7 +465,41 @@ export default class IOReader implements BytesReader {
 
     return buffer
   }
+  /**
+   * 读取指定长度的二进制 buffer 数据（不会移动读取指针位置）
+   * 
+   * @param length 
+   * @returns 
+   */
+  public async peekBuffer(length: number): Promise<Uint8Array >
+  public async peekBuffer<T extends Uint8ArrayInterface>(length: number, buffer: T): Promise<T>
+  public async peekBuffer(length: number, buffer?: Uint8ArrayInterface): Promise<Uint8ArrayInterface> {
 
+    if (length > this.size) {
+      this.error = IOError.INVALID_OPERATION
+      logger.fatal('peekBuffer, length too large')
+    }
+
+    if (this.remainingLength() < length) {
+      await this.flush(length)
+    }
+
+    if (!buffer) {
+      buffer = new Uint8Array(length)
+    }
+
+    buffer.set(this.buffer.subarray(this.pointer, this.pointer + length), 0)
+
+    return buffer
+  }
+
+  /**
+   * 读取最多 length 字节的数据到指定 buffer，返回已写入的字节长度
+   * 
+   * @param length 
+   * @param buffer 
+   * @returns 
+   */
   public async readToBuffer(length: number, buffer: Uint8ArrayInterface): Promise<number> {
     if (this.remainingLength() < length) {
       let index = 0
@@ -446,28 +545,6 @@ export default class IOReader implements BytesReader {
     }
   }
 
-  public async peekBuffer(length: number): Promise<Uint8Array >
-  public async peekBuffer<T extends Uint8ArrayInterface>(length: number, buffer: T): Promise<T>
-  public async peekBuffer(length: number, buffer?: Uint8ArrayInterface): Promise<Uint8ArrayInterface> {
-
-    if (length > this.size) {
-      this.error = IOError.INVALID_OPERATION
-      logger.fatal('peekBuffer, length too large')
-    }
-
-    if (this.remainingLength() < length) {
-      await this.flush(length)
-    }
-
-    if (!buffer) {
-      buffer = new Uint8Array(length)
-    }
-
-    buffer.set(this.buffer.subarray(this.pointer, this.pointer + length), 0)
-
-    return buffer
-  }
-
   /**
    * 读取指定长度的字符串
    * 
@@ -478,6 +555,12 @@ export default class IOReader implements BytesReader {
     const buffer = await this.readBuffer(length)
     return text.decode(buffer)
   }
+  /**
+   * 读取指定长度的字符串（不会移动读取指针位置）
+   * 
+   * @param length 默认 1
+   * @returns 
+   */
   public async peekString(length: number = 1) {
     const buffer = await this.peekBuffer(length)
     return text.decode(buffer)
@@ -524,6 +607,9 @@ export default class IOReader implements BytesReader {
 
     return str
   }
+  /**
+   * 读取一行字符（不会移动读取指针位置）
+   */
   public async peekLine() {
     if (this.remainingLength() < this.size) {
       try {
@@ -613,6 +699,12 @@ export default class IOReader implements BytesReader {
     }
   }
 
+  /**
+   * 重新填充剩余缓冲区
+   * 
+   * @param need 
+   * @returns 
+   */
   public async flush(need: number = 0) {
 
     if (!this.onFlush) {
@@ -657,6 +749,15 @@ export default class IOReader implements BytesReader {
     this.error = 0
   }
 
+  /**
+   * 
+   * seek 到指定位置
+   * 
+   * @param pos 
+   * @param force false 时可以在目前的缓冲区内 seek，否则丢弃缓冲区内容重新填充指定位置的数据，默认 false
+   * @param flush 指定 seek 之后是否马上填充数据，否则只 seek 到目标位置，默认 true
+   * @returns 
+   */
   public async seek(pos: bigint, force: boolean = false, flush: boolean = true) {
     if (!force) {
       const len = Number(pos - this.pos)
@@ -695,10 +796,18 @@ export default class IOReader implements BytesReader {
     }
   }
 
+  /**
+   * 获取缓冲区
+   */
   public getBuffer() {
     return this.buffer
   }
 
+  /**
+   * 写入数据到缓冲区
+   * 
+   * @param buffer 
+   */
   public appendBuffer(buffer: Uint8Array) {
     if (this.size - this.endPointer >= buffer.length) {
       this.buffer.set(buffer, this.endPointer)
@@ -723,16 +832,29 @@ export default class IOReader implements BytesReader {
     }
   }
 
+  /**
+   * 重置 reader
+   */
   public reset() {
     this.pointer = this.endPointer = 0
     this.pos = 0n
     this.error = 0
   }
 
+  /**
+   * 设置读取是小端还是大端
+   * 
+   * @param bigEndian 
+   */
   public setEndian(bigEndian: boolean) {
     this.littleEndian = !bigEndian
   }
 
+  /**
+   * 获取源总字节长度
+   * 
+   * @returns 
+   */
   public async fileSize() {
     if (this.fileSize_) {
       return this.fileSize_
@@ -751,10 +873,21 @@ export default class IOReader implements BytesReader {
     return this.fileSize_
   }
 
+  /**
+   * 获取缓冲区长度
+   * 
+   * @returns 
+   */
   public getBufferSize() {
     return this.size
   }
 
+  /**
+   * 连接到 ioWriter
+   * 
+   * @param ioWriter 
+   * @param length 
+   */
   public async pipe(ioWriter: IOWriter, length?: number) {
     if (length) {
       if (this.remainingLength() < length) {

@@ -223,10 +223,21 @@ export default class BufferWriter implements BytesWriterSync {
     return buffer.length
   }
 
+  /**
+   * 获取已写的数据
+   * 
+   * @returns 
+   */
   public getWroteBuffer() {
     return this.buffer.subarray(0, this.pos)
   }
 
+  /**
+   * 重新装载数据
+   * 
+   * @param data 
+   * @param bigEndian 
+   */
   public resetBuffer(data: Uint8ArrayInterface, bigEndian: boolean = true) {
     this.buffer = data
     this.data = data instanceof Uint8Array ? new DataView(data.buffer) : data.view

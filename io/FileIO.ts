@@ -1,6 +1,9 @@
 
 const RESIZE_CHUNK_SIZE = 1024 * 1024 * 5
 
+/**
+ * 文件 IO
+ */
 export default class FileIO {
 
   private handler: FileHandle

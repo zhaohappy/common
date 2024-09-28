@@ -1,6 +1,9 @@
 import FileIO from './FileIO'
 import CommandQueue from '../helper/CommandQueue'
 
+/**
+ * 安全的文件 IO 操作
+ */
 export default class SafeFileIO extends FileIO {
 
   private commandQueue: CommandQueue

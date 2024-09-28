@@ -1,5 +1,8 @@
 import { TypeArrayConstructor, TypeArray } from '../types/type'
 
+/**
+ * 环形缓冲区
+ */
 export default class RingBuffer<T extends TypeArray> {
 
   private size: number
@@ -26,6 +29,12 @@ export default class RingBuffer<T extends TypeArray> {
     this.constructorFunction = constructor
   }
 
+  /**
+   * 写入数据到缓冲区
+   * 
+   * @param data 
+   * @returns 
+   */
   public write(data: T) {
     const length = data.length
     if (length > this.size) {
@@ -61,6 +70,12 @@ export default class RingBuffer<T extends TypeArray> {
     }
   }
 
+  /**
+   * 从缓冲区读取指定长度的数据
+   * 
+   * @param length 
+   * @returns 
+   */
   public read(length: number): T {
     if (this.length === 0) {
       return
@@ -90,6 +105,13 @@ export default class RingBuffer<T extends TypeArray> {
     return data as T
   }
 
+  /**
+   * 读取指定区间的数据
+   * 
+   * @param start 
+   * @param end 
+   * @returns 
+   */
   public readByRange(start: number, end: number) {
     if (start <= end) {
       const data = new this.constructorFunction(end - start)
@@ -105,10 +127,20 @@ export default class RingBuffer<T extends TypeArray> {
     }
   }
 
+  /**
+   * 获取当前读取指针
+   * 
+   * @returns 
+   */
   public getCurrentPointer() {
     return this.valid
   }
 
+  /**
+   * 读取一个字节
+   * 
+   * @returns 
+   */
   public readByte() {
     if (this.length > 0) {
       let result: number
@@ -127,6 +159,12 @@ export default class RingBuffer<T extends TypeArray> {
     }
   }
 
+  /**
+   * 读取指定位置的数据
+   * 
+   * @param index 
+   * @returns 
+   */
   public getByteByIndex(index: number) {
     if (this.length > index) {
       let result: number
@@ -142,22 +180,47 @@ export default class RingBuffer<T extends TypeArray> {
     }
   }
 
+  /**
+   * 获取缓冲区大小
+   * 
+   * @returns 
+   */
   public getSize() {
     return this.size
   }
 
+  /**
+   * 获取数据大小
+   * 
+   * @returns 
+   */
   public getLength() {
     return this.length
   }
 
+  /**
+   * 获取当前读取位置
+   * 
+   * @returns 
+   */
   public getPos() {
     return this.pos
   }
 
+  /**
+   * 获取缓冲区剩余长度
+   * 
+   * @returns 
+   */
   public getRemainingSize() {
     return this.size - this.length
   }
 
+  /**
+   * 将读取指针回退指定长度
+   * 
+   * @param length 
+   */
   public back(length: number) {
     if (length > this.size - this.length) {
       this.pos -= (this.size - this.length)
@@ -176,6 +239,11 @@ export default class RingBuffer<T extends TypeArray> {
     }
   }
 
+  /**
+   * 跳过指定长度
+   * 
+   * @param length 
+   */
   public skip(length: number) {
     if (this.length < length) {
       this.valid = this.tail = 0
@@ -194,6 +262,9 @@ export default class RingBuffer<T extends TypeArray> {
     }
   }
 
+  /**
+   * 重置缓冲区
+   */
   public clear() {
     this.valid = this.tail = this.length = this.pos = 0
   }

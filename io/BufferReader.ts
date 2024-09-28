@@ -303,6 +303,12 @@ export default class BufferReader implements BytesReaderSync {
     this.byteStart = 0
   }
 
+  /**
+   * 重新装载数据
+   * 
+   * @param data 
+   * @param bigEndian 
+   */
   public resetBuffer(data: Uint8ArrayInterface, bigEndian: boolean = true) {
     this.buffer = data
     this.data = data instanceof Uint8Array ? new DataView(data.buffer) : data.view
