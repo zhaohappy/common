@@ -98,6 +98,10 @@ export interface OS {
   linux?: boolean
 
   mac?: boolean
+
+  harmony?: boolean
+
+  mobile?: boolean
 }
 
 export interface Browser {

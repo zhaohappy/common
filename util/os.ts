@@ -20,6 +20,8 @@ import { each } from '../util/array'
 
 // 优先判断移动版，因为移动版通常会带着 PC 的标识，反过来则不会
 const list = [
+  [ 'harmony', /harmonyos ([\d_.]+)/ ],
+  [ 'harmony', /openharmony ([\d_.]+)/ ],
   [ 'iphone', /iphone os ([\d_.]+)/ ],
   [ 'ipad', /ipad; cpu os ([\d_.]+)/ ],
   [ 'itouch', /itouch; cpu os ([\d_.]+)/ ],
@@ -65,7 +67,8 @@ function parseUA(ua: string): OS {
 
   return {
     name: name || '',
-    version: version || ''
+    version: version || '',
+    mobile: ua.indexOf('mobile') > -1
   }
 }
 
