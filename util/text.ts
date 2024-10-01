@@ -36,11 +36,7 @@ export function encode(data: string) {
   return new Uint8Array(array)
 }
 
-export function decode(data: Uint8Array | number[]) {
-  if (data instanceof Uint8Array && decoder && !(typeof SharedArrayBuffer === 'function' && data.buffer instanceof SharedArrayBuffer)) {
-    return decoder.decode(data)
-  }
-
+function decodeJS(data: Uint8Array | number[]) {
   let result = ''
 
   for (let i = 0; i < data.length;) {
@@ -70,4 +66,17 @@ export function decode(data: Uint8Array | number[]) {
     }
   }
   return result
+}
+
+export function decode(data: Uint8Array | number[]) {
+  if (data instanceof Uint8Array && decoder && !(typeof SharedArrayBuffer === 'function' && data.buffer instanceof SharedArrayBuffer)) {
+    try {
+      // chrome 偶现 data.buffer instanceof SharedArrayBuffer 返回 false 但其实是 SharedArrayBuffer 的情况
+      return decoder.decode(data)
+    }
+    catch (error) {
+      return decodeJS(data)
+    }
+  }
+  return decodeJS(data)
 }
