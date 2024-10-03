@@ -62,7 +62,7 @@ export default class BufferReader implements BytesReaderSync {
   public readUint24() {
     const high = this.readUint16()
     const low = this.readUint8()
-    return high << 8 | low
+    return this.littleEndian ? (low << 16 | high) : (high << 8 | low)
   }
 
   /**
@@ -110,6 +110,16 @@ export default class BufferReader implements BytesReaderSync {
     const value = this.data.getInt16(this.pos + this.byteStart, this.littleEndian)
     this.pos += 2
     return value
+  }
+
+  /**
+   * 读取 24 位有符号整数
+   * 
+   * @returns 
+   */
+  public readInt24() {
+    const value = this.readUint24()
+    return (value & 0x800000) ? (value - 0x1000000) : value
   }
 
   /**

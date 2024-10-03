@@ -154,6 +154,13 @@ export default class IOWriter implements BytesWriter {
   }
 
   /**
+   * 写 24 位有符号整数
+   */
+  public async writeInt24(value: number) {
+    await this.writeUint24(value < 0 ? (value + 0x1000000) : value)
+  }
+
+  /**
    * 写 32 位有符号整数
    */
   public async writeInt32(value: number) {

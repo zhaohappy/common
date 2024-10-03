@@ -135,7 +135,7 @@ export default class IOReader implements BytesReader {
     }
     const high = await this.readUint16()
     const low = await this.readUint8()
-    return high << 8 | low
+    return this.littleEndian ? (low << 16 | high) : (high << 8 | low)
   }
   /**
    * 读取 24 位无符号整数（不会移动读取指针位置）
@@ -151,7 +151,7 @@ export default class IOReader implements BytesReader {
 
     const high = await this.readUint16()
     const low = await this.readUint8()
-    const value = high << 8 | low
+    const value = this.littleEndian ? (low << 16 | high) : (high << 8 | low)
 
     this.pointer = pointer
     this.pos = pos
@@ -261,6 +261,25 @@ export default class IOReader implements BytesReader {
       await this.flush(2)
     }
     return this.data.getInt16(this.pointer, this.littleEndian)
+  }
+
+  /**
+   * 读取 24 位有符号整数
+   * 
+   * @returns 
+   */
+  public async readInt24() {
+    const value = await this.readUint24()
+    return (value & 0x800000) ? (value - 0x1000000) : value
+  }
+  /**
+   * 读取 24 位有符号整数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
+  public async peekInt24() {
+    const value = await this.peekUint24()
+    return (value & 0x800000) ? (value - 0x1000000) : value
   }
 
   /**

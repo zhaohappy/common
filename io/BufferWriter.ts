@@ -109,6 +109,13 @@ export default class BufferWriter implements BytesWriterSync {
   }
 
   /**
+   * 写 24 位有符号整数
+   */
+  public writeInt24(value: number) {
+    this.writeUint24(value < 0 ? (value + 0x1000000) : value)
+  }
+
+  /**
    * 写 32 位有符号整数
    */
   public writeInt32(value: number) {

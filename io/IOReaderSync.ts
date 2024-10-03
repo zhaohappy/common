@@ -129,9 +129,12 @@ export default class IOReaderSync implements BytesReaderSync {
    * @returns 
    */
   public readUint24() {
+    if (this.remainingLength() < 3) {
+      this.flush(3)
+    }
     const high = this.readUint16()
     const low = this.readUint8()
-    return high << 8 | low
+    return this.littleEndian ? (low << 16 | high) : (high << 8 | low)
   }
   /**
    * 读取 24 位无符号整数（不会移动读取指针位置）
@@ -147,7 +150,7 @@ export default class IOReaderSync implements BytesReaderSync {
 
     const high = this.readUint16()
     const low = this.readUint8()
-    const value = high << 8 | low
+    const value = this.littleEndian ? (low << 16 | high) : (high << 8 | low)
 
     this.pointer = pointer
     this.pos = pos
@@ -257,6 +260,25 @@ export default class IOReaderSync implements BytesReaderSync {
       this.flush(2)
     }
     return this.data.getInt16(this.pointer, this.littleEndian)
+  }
+
+  /**
+   * 读取 24 位有符号整数
+   * 
+   * @returns 
+   */
+  public readInt24() {
+    const value = this.readUint24()
+    return (value & 0x800000) ? (value - 0x1000000) : value
+  }
+  /**
+   * 读取 24 位有符号整数（不会移动读取指针位置）
+   * 
+   * @returns 
+   */
+  public peekInt24() {
+    const value = this.peekUint24()
+    return (value & 0x800000) ? (value - 0x1000000) : value
   }
 
   /**
