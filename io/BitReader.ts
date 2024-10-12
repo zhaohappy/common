@@ -97,6 +97,22 @@ export default class BitReader {
   }
 
   /**
+   * 读取 n 个比特（不会移动读取指针）
+   * 
+   * @param n
+   */
+  public peekU(n: number) {
+    const pointer = this.pointer
+    const bitsLeft = this.bitsLeft
+    const pos = this.pos
+    const result = this.readU(n)
+    this.pointer = pointer
+    this.bitsLeft = bitsLeft
+    this.pos = pos
+    return result
+  }
+
+  /**
    * 获取剩余可读字节数
    * 
    * @returns 
