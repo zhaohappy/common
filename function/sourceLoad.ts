@@ -16,7 +16,7 @@ function webpackBootstrapFunc (modules) {
       exports: {}
     };
     if (!modules[moduleId]) {
-      console.log('can not found module:', moduleId)
+      console.error('can not found module:', moduleId)
     }
     modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
     module.l = true;
