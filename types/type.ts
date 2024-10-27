@@ -13,6 +13,11 @@ export type Fn = (...args: any[]) => any
 
 export type Timeout = null | ReturnType<typeof setTimeout>
 
+export interface Range {
+  from: number
+  to: number
+}
+
 export type ValueHolder = {
 
   keypath?: string
