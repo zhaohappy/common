@@ -1,5 +1,6 @@
 export const enum IOError {
   END = -(1 << 20),
   AGAIN,
-  INVALID_OPERATION
+  INVALID_OPERATION,
+  NETWORK_ERROR
 }
