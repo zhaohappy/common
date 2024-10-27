@@ -89,4 +89,10 @@ export abstract class TextMessageSession {
     this.ioWriter.flush()
     return this.readResponse()
   }
+
+  public async notify(request: TextMessageRequest) {
+    this.ioWriter.reset()
+    this.ioWriter.writeString(request.encode())
+    await this.ioWriter.flush()
+  }
 }
