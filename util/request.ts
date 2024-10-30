@@ -58,7 +58,7 @@ export async function post(path: string, data: Object, contentType?: string, hea
 
         let signal = null
         let controller = null
-        if (AbortController) {
+        if (typeof AbortController === 'function') {
           controller = new AbortController()
           signal = controller.signal
         }
@@ -126,7 +126,7 @@ export async function get(path: string, data: Object, contentType?: string, head
 
         let signal = null
         let controller = null
-        if (AbortController) {
+        if (typeof AbortController === 'function') {
           controller = new AbortController()
           signal = controller.signal
         }

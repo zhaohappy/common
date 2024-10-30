@@ -205,6 +205,11 @@ export interface WXFile {
 
 export type TransportInterfaceSendData = string | object | ArrayBuffer
 
+export interface HttpOptions {
+  headers?: Data
+  credentials?: RequestCredentials
+  referrerPolicy?: ReferrerPolicy
+}
 
 /**
  * WebSocket 实例接口
