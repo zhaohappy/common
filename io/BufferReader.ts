@@ -42,6 +42,9 @@ export default class BufferReader implements BytesReaderSync {
   public readUint8() {
     return this.data.getUint8(this.pos++ + this.byteStart)
   }
+  public peekUint8() {
+    return this.data.getUint8(this.pos + this.byteStart)
+  }
 
   /**
    * 读取 16 位无符号整数
@@ -51,6 +54,10 @@ export default class BufferReader implements BytesReaderSync {
   public readUint16() {
     const value = this.data.getUint16(this.pos + this.byteStart, this.littleEndian)
     this.pos += 2
+    return value
+  }
+  public peekUint16() {
+    const value = this.data.getUint16(this.pos + this.byteStart, this.littleEndian)
     return value
   }
 
@@ -64,6 +71,12 @@ export default class BufferReader implements BytesReaderSync {
     const low = this.readUint8()
     return this.littleEndian ? (low << 16 | high) : (high << 8 | low)
   }
+  public peekUint24() {
+    const high = this.readUint16()
+    const low = this.readUint8()
+    this.pos -= 3
+    return this.littleEndian ? (low << 16 | high) : (high << 8 | low)
+  }
 
   /**
    * 读取 32 位无符号整数
@@ -73,6 +86,10 @@ export default class BufferReader implements BytesReaderSync {
   public readUint32() {
     const value = this.data.getUint32(this.pos + this.byteStart, this.littleEndian)
     this.pos += 4
+    return value
+  }
+  public peekUint32() {
+    const value = this.data.getUint32(this.pos + this.byteStart, this.littleEndian)
     return value
   }
 
@@ -91,6 +108,17 @@ export default class BufferReader implements BytesReaderSync {
       return high << 32n | low
     }
   }
+  public peekUint64() {
+    const high = BigInt(this.readUint32())
+    const low = BigInt(this.readUint32())
+    this.pos -= 8
+    if (this.littleEndian) {
+      return low << 32n | high
+    }
+    else {
+      return high << 32n | low
+    }
+  }
 
   /**
    * 读取 8 位有符号整数
@@ -99,6 +127,9 @@ export default class BufferReader implements BytesReaderSync {
    */
   public readInt8() {
     return this.data.getInt8(this.pos++ + this.byteStart)
+  }
+  public peekInt8() {
+    return this.data.getInt8(this.pos + this.byteStart)
   }
 
   /**
@@ -111,6 +142,10 @@ export default class BufferReader implements BytesReaderSync {
     this.pos += 2
     return value
   }
+  public peekInt16() {
+    const value = this.data.getInt16(this.pos + this.byteStart, this.littleEndian)
+    return value
+  }
 
   /**
    * 读取 24 位有符号整数
@@ -119,6 +154,10 @@ export default class BufferReader implements BytesReaderSync {
    */
   public readInt24() {
     const value = this.readUint24()
+    return (value & 0x800000) ? (value - 0x1000000) : value
+  }
+  public peekInt24() {
+    const value = this.peekUint24()
     return (value & 0x800000) ? (value - 0x1000000) : value
   }
 
@@ -130,6 +169,10 @@ export default class BufferReader implements BytesReaderSync {
   public readInt32() {
     const value = this.data.getInt32(this.pos + this.byteStart, this.littleEndian)
     this.pos += 4
+    return value
+  }
+  public peekInt32() {
+    const value = this.data.getInt32(this.pos + this.byteStart, this.littleEndian)
     return value
   }
 
@@ -148,6 +191,17 @@ export default class BufferReader implements BytesReaderSync {
       return high << 32n | low
     }
   }
+  public peekInt64() {
+    const high = BigInt(this.readInt32())
+    const low = BigInt(this.readInt32())
+    this.pos -= 8
+    if (this.littleEndian) {
+      return low << 32n | high
+    }
+    else {
+      return high << 32n | low
+    }
+  }
 
   /**
    * 读取单精度浮点数
@@ -159,6 +213,10 @@ export default class BufferReader implements BytesReaderSync {
     this.pos += 4
     return value
   }
+  public peekFloat() {
+    const value = this.data.getFloat32(this.pos + this.byteStart, this.littleEndian)
+    return value
+  }
 
   /**
    * 读取双精度浮点数
@@ -168,6 +226,10 @@ export default class BufferReader implements BytesReaderSync {
   public readDouble() {
     const value = this.data.getFloat64(this.pos + this.byteStart, this.littleEndian)
     this.pos += 8
+    return value
+  }
+  public peekDouble() {
+    const value = this.data.getFloat64(this.pos + this.byteStart, this.littleEndian)
     return value
   }
 
@@ -184,6 +246,12 @@ export default class BufferReader implements BytesReaderSync {
       hexStr += (hex.length === 1 ? '0' + hex : hex)
     }
     return hexStr
+  }
+  public peekHex(length: number = 1) {
+    const pos = this.pos
+    const str = this.readHex(length)
+    this.pos = pos
+    return str
   }
 
   /**
@@ -210,6 +278,12 @@ export default class BufferReader implements BytesReaderSync {
 
     return str
   }
+  public peekString(length: number = 1) {
+    const pos = this.pos
+    const str = this.readString(length)
+    this.pos = pos
+    return str
+  }
 
   /**
    * 读取一行字符
@@ -234,6 +308,12 @@ export default class BufferReader implements BytesReaderSync {
       }
     }
 
+    return str
+  }
+  public peekLine() {
+    const pos = this.pos
+    const str = this.readLine()
+    this.pos = pos
     return str
   }
 
