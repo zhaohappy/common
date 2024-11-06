@@ -55,8 +55,18 @@ export function stringifyQuery(query: Record<string, string | number | boolean>,
  */
 export function parse(url: string) {
 
+  const source = url
+
   const key = ['source', 'protocol', 'authority', 'userInfo', 'user', 'password', 'host', 'port', 'relative', 'path', 'directory', 'file', 'query', 'anchor']
-  const parser = /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
+  const parser = /^(?:(?![^:@\/]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@\/]*)(?::([^:@\/]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
+  const ipv6Reg = /:\/\/([^\/@]*@?)\[(\S+)\]/
+  let ipv6Host = ''
+  if (ipv6Reg.test(url)) {
+    url = url.replace(ipv6Reg, (s0, s1, s2) => {
+      ipv6Host = s2
+      return `://${s1 || ''}a.b`
+    })
+  }
 
   const result: Partial<any> = {}
   const m = parser.exec(url)
@@ -64,6 +74,11 @@ export function parse(url: string) {
 
   while (i--) {
     result[key[i]] = m[i] ?? ''
+  }
+  if (ipv6Host) {
+    result.host = ipv6Host
+    result.source = source
+    result.authority = ipv6Host + (result.port ? (':' + result.port) : '')
   }
   return {
     protocol: result.protocol as string,
