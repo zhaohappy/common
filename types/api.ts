@@ -54,10 +54,10 @@ declare const ManagedMediaSource: {
   isTypeSupported(type: string): boolean
 }
 
-declare const MediaSourceHandle: {
-  prototype: Object
-  new(): Object
-}
+// declare const MediaSourceHandle: {
+//   prototype: Object
+//   new(): Object
+// }
 
 declare const webkitAudioContext: {
   prototype: AudioContext
