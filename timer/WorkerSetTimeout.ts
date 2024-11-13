@@ -1,7 +1,15 @@
-
-import sourceLoad from '../function/sourceLoad'
-
-require('./workerSetTimeoutTask')
+function workerTimeout(self: Worker) {
+  self.addEventListener('message', (message) => {
+    const origin = message.data
+    let data = origin.data
+    setTimeout(() => {
+      self.postMessage({
+        type: 'pong',
+        id: data.id
+      })
+    }, Math.max(data.timeout ?? 0, 4))
+  })
+}
 
 export default class WorkerSetTimeout {
 
@@ -19,8 +27,8 @@ export default class WorkerSetTimeout {
     this.taskMap = new Map()
 
     const workerSource = `
-      ${sourceLoad(require.resolve('./workerSetTimeoutTask'), { varName: 'workerSetTimeoutTask' })}
-      workerSetTimeoutTask.default(self)
+      ${workerTimeout.toString()}
+      workerTimeout(self)
     `
 
     const blob = new Blob([workerSource], { type: 'text/javascript' })
