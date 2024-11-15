@@ -80,6 +80,38 @@ const checkVersionMap = {
 
 }
 
+const iOSSafariWebkitVersionList = [
+  ['603.2.1', '10.3'],
+  ['604.2.4', '11'],
+  ['606.1.36', '12'],
+  ['608.2.11', '13'],
+  ['610.1.28', '14'],
+  ['612.1.27', '15'],
+  ['612.2.9', '15.1'],
+  ['612.3.6', '15.2'],
+  ['612.4.9', '15.3'],
+  ['613.1.17', '15.4'],
+  ['613.2.7', '15.5'],
+  ['613.3.9', '15.6'],
+  ['614.1.25', '16'],
+  ['614.2.9', '16.1'],
+  ['614.3.7', '16.2'],
+  ['614.4.6', '16.3'],
+  ['615.1.26', '16.4'],
+  ['615.2.9', '16.5'],
+  ['615.3.12', '16.6'],
+  ['616.1.27', '17'],
+  ['616.2.9', '17.1'],
+  ['617.1.17', '17.2'],
+  ['617.2.4', '17.3'],
+  ['618.1.15', '17.4'],
+  ['618.2.12', '17.5'],
+  ['618.3.11', '17.6'],
+  ['619.1.26', '18'],
+  ['619.2.8', '18.1'],
+  ['620.1.11', '18.2']
+]
+
 /**
  * 获取 UA 的结构化信息
  *
@@ -109,6 +141,25 @@ function parseUA(ua: string): Browser {
       }
     }
   )
+
+  // safari 找不到版本号，根据 webkit 查找
+  if (name === BrowserType.SAFARI && !version) {
+    let match = /safari[ \/]([\d_.]+)/.exec(ua)
+    if (match && match[1]) {
+      const webkit = match[1]
+      if (webkit) {
+        for (let i = iOSSafariWebkitVersionList.length - 1; i >= 0; i--) {
+          if (checkVersion(webkit, iOSSafariWebkitVersionList[i][0], true)) {
+            version = iOSSafariWebkitVersionList[i][1]
+            break
+          }
+        }
+      }
+      if (!version) {
+        version = '1'
+      }
+    }
+  }
 
   return {
     name: name || '',
