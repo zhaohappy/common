@@ -1,5 +1,6 @@
 import isWorker from '../function/isWorker'
 import browser from './browser'
+import os from './os'
 
 
 function supportedFeatures() {
@@ -39,7 +40,9 @@ function supportedFeatures() {
   let jspi = typeof WebAssembly.Suspending === 'function' && typeof WebAssembly.promising === 'function'
 
   // safari 低于 11 不支持
-  if (browser.safari && !browser.checkVersion(browser.majorVersion, '11', true)) {
+  if (browser.safari && !browser.checkVersion(browser.majorVersion, '11', true)
+    || os.ios && !browser.checkVersion(os.version, '11', true)
+  ) {
     wasm = false
   }
 
@@ -50,7 +53,9 @@ function supportedFeatures() {
   }
 
   // safari 17 之前渲染 VideoFrame 有问题
-  if (browser.safari && !browser.checkVersion(browser.majorVersion, '17', true)) {
+  if (browser.safari && !browser.checkVersion(browser.majorVersion, '17', true)
+    || os.ios && !browser.checkVersion(os.version, '17', true)
+  ) {
     videoDecoder = false
   }
 
@@ -86,7 +91,8 @@ function supportedFeatures() {
     proxy,
     simd: (browser.chrome || browser.newEdge) && browser.checkVersion(browser.majorVersion, '91', true)
       || browser.firefox && browser.checkVersion(browser.majorVersion, '89', true)
-      || browser.safari && browser.checkVersion(browser.version, '16.4', true),
+      || browser.safari && browser.checkVersion(browser.version, '16.4', true)
+      || os.ios && browser.checkVersion(os.version, '16.4', true),
     wasmBaseSupported: fetchSupported && wasm && webgl && audioContext && arrayBuffer && webAssemblyGlobal
   }
 }
