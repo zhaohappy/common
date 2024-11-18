@@ -7,14 +7,14 @@ export class TextMessageRequest {
   uri: string
   protocol: string
   headers: Record<string, string>
-  context: string
+  content: string
 
-  constructor(method: string, uri: string, protocol: string, headers: Record<string, string> = {}, context: string = '') {
+  constructor(method: string, uri: string, protocol: string, headers: Record<string, string> = {}, content: string = '') {
     this.method = method
     this.uri = uri
     this.protocol = protocol
     this.headers = headers
-    this.context = context
+    this.content = content
   }
 
   public setHeader(key: string, value: string) {
@@ -23,7 +23,7 @@ export class TextMessageRequest {
 
   public encode() {
     let text = `${this.method} ${this.uri} ${this.protocol}\r\n`
-    this.headers['Content-Length'] = this.context.length + ''
+    this.headers['Content-Length'] = this.content.length + ''
     object.each(this.headers, (value, key) => {
       if (value) {
         text += `${key}: ${value}\r\n`
@@ -31,8 +31,8 @@ export class TextMessageRequest {
     })
     text += '\r\n'
 
-    if (this.context) {
-      text += this.context
+    if (this.content) {
+      text += this.content
     }
     return text
   }
@@ -43,14 +43,14 @@ export class TextMessageResponse {
   statusCode: number
   statusText: string
   headers: Record<string, string>
-  context: string
+  content: string
 
-  constructor(protocol: string, statusCode: number, statusText: string, headers: Record<string, string>, context: string) {
+  constructor(protocol: string, statusCode: number, statusText: string, headers: Record<string, string>, content: string) {
     this.protocol = protocol
     this.statusCode = statusCode
     this.statusText = statusText
     this.headers = headers
-    this.context = context
+    this.content = content
   }
 }
 
