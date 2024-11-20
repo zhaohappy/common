@@ -93,7 +93,8 @@ function supportedFeatures() {
       || browser.firefox && browser.checkVersion(browser.majorVersion, '89', true)
       || browser.safari && browser.checkVersion(browser.version, '16.4', true)
       || os.ios && browser.checkVersion(os.version, '16.4', true),
-    wasmBaseSupported: fetchSupported && wasm && webgl && audioContext && arrayBuffer && webAssemblyGlobal
+    wasmPlayerSupported: fetchSupported && wasm && webgl && audioContext && arrayBuffer && webAssemblyGlobal,
+    wasmBaseSupported: wasm && webAssemblyGlobal && arrayBuffer
   }
 }
 
