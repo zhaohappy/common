@@ -9,6 +9,12 @@
 
 const UINT32_MAX = Math.pow(2, 32)
 
+/**
+ * 只能处理正数
+ * 
+ * @param value 
+ * @returns 
+ */
 export default function i32Toi64(low: number, high: number) {
-  return (low >>> 0) + high * UINT32_MAX
+  return low + high * UINT32_MAX
 }

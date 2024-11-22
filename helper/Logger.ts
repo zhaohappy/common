@@ -6,6 +6,9 @@ type Options = {
   uploadLevel?: number
   onUpload?: (log: string, level: number) => void
 }
+
+type defined<T extends string> = `defined(${T})`
+
 export default class Logger {
 
   private options: Options
