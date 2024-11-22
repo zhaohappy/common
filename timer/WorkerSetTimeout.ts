@@ -28,7 +28,7 @@ export default class WorkerSetTimeout {
 
     const workerSource = `
       ${workerTimeout.toString()}
-      workerTimeout(self)
+      ${workerTimeout.name}(self)
     `
 
     const blob = new Blob([workerSource], { type: 'text/javascript' })
