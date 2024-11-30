@@ -1,5 +1,8 @@
+import BufferWriter from '../io/BufferWriter'
 import BufferReader from '../io/BufferReader'
 import { BytesReaderSync, BytesReader, BytesWriter, BytesWriterSync } from '../io/interface'
+import browser from './browser'
+import os from './os'
 
 export const enum SectionId {
   Custom,
@@ -23,7 +26,7 @@ export const enum ExternalKind {
   Global
 }
 
-export function readULeb128(reader: BytesReaderSync) {
+export function readUleb128(reader: BytesReaderSync) {
   let result = 0
   let shift = 0
   while (true) {
@@ -39,7 +42,7 @@ export function readULeb128(reader: BytesReaderSync) {
   return result
 }
 
-export async function readULeb128Async(reader: BytesReader) {
+export async function readUleb128Async(reader: BytesReader) {
   let result = 0
   let shift = 0
   while (true) {
@@ -55,7 +58,7 @@ export async function readULeb128Async(reader: BytesReader) {
   return result
 }
 
-export function readSLeb128(reader: BytesReaderSync) {
+export function readSleb128(reader: BytesReaderSync) {
   let result = 0
   let shift = 0
   let byte: number
@@ -79,7 +82,7 @@ export function readSLeb128(reader: BytesReaderSync) {
   return result
 }
 
-export async function readSLeb128Async(reader: BytesReader) {
+export async function readSleb128Async(reader: BytesReader) {
   let result = 0
   let shift = 0
   let byte: number
@@ -159,65 +162,92 @@ export async function writeUleb128Async(writer: BytesWriter, value: number) {
   } while (value !== 0)
 }
 
-export function setMemoryShared(wasm: Uint8Array, shared: boolean) {
+export function setMemoryMeta(wasm: Uint8Array, options: {
+  shared: boolean
+  maximum?: number
+  initial?: number
+}) {
   const reader = new BufferReader(wasm, true)
+  const writer = new BufferWriter(new Uint8Array(wasm.length + 100), true)
 
-  reader.skip(8)
+  writer.writeBuffer(reader.readBuffer(8))
 
   while (reader.remainingSize()) {
     const sectionId = reader.readUint8()
+    writer.writeUint8(sectionId)
 
-    const size = readULeb128(reader)
+    const size = readUleb128(reader)
 
     if (sectionId === SectionId.Import) {
-      let count = readULeb128(reader)
+
+      const importWriter = new BufferWriter(new Uint8Array(size + 100))
+
+      let count = readUleb128(reader)
+      writeUleb128(importWriter, count)
+
       while (count--) {
-        const moduleLen = readULeb128(reader)
-        reader.skip(moduleLen)
-        const fieldLen = readULeb128(reader)
-        reader.skip(fieldLen)
+        const moduleLen = readUleb128(reader)
+        writeUleb128(importWriter, moduleLen)
+        importWriter.writeBuffer(reader.readBuffer(moduleLen))
+        const fieldLen = readUleb128(reader)
+        writeUleb128(importWriter, fieldLen)
+        importWriter.writeBuffer(reader.readBuffer(fieldLen))
         const externalKind = reader.readUint8()
+        importWriter.writeUint8(externalKind)
         switch (externalKind) {
           case ExternalKind.Function: {
             // type index of the function signature
-            readULeb128(reader)
+            writeUleb128(importWriter, readUleb128(reader))
             break
           }
           case ExternalKind.Global: {
             // content_type
-            readSLeb128(reader)
+            writeSleb128(importWriter, readSleb128(reader))
             // mutability
-            readULeb128(reader)
+            writeUleb128(importWriter, readUleb128(reader))
             break
           }
           case ExternalKind.Memory: {
-            const pos = Number(reader.getPos())
-            if (shared) {
-              wasm[pos] = wasm[pos] | 2
+            let flags = readUleb128(reader)
+            if (options.shared) {
+              writeUleb128(importWriter, flags | 2)
             }
             else {
-              wasm[pos] = wasm[pos] & ~2
+              writeUleb128(importWriter, flags & ~2)
             }
-            return
+            const initial = readUleb128(reader)
+            writeUleb128(importWriter, options.initial || initial)
+            if (flags & 0x01) {
+              let maximum = readUleb128(reader)
+              if (options.maximum && (!(os.ios && !browser.checkVersion(os.version, '17', true)) || !options.shared)) {
+                maximum = options.maximum
+              }
+              writeUleb128(importWriter, maximum)
+            }
+            break
           }
           case ExternalKind.Table: {
             // elem_type
-            readSLeb128(reader)
-            const flags = readULeb128(reader)
-            readULeb128(reader)
-
+            writeSleb128(importWriter, readSleb128(reader))
+            const flags = readUleb128(reader)
+            writeUleb128(importWriter, flags)
+            writeUleb128(importWriter, readUleb128(reader))
             if (flags & 0x01) {
               // maximum
-              readULeb128(reader)
+              writeUleb128(importWriter, readUleb128(reader))
             }
             break
           }
         }
       }
-      return
+      const buffer = importWriter.getWroteBuffer()
+      writeUleb128(writer, buffer.length)
+      writer.writeBuffer(buffer)
     }
     else {
-      reader.skip(size)
+      writeUleb128(writer, size)
+      writer.writeBuffer(reader.readBuffer(size))
     }
   }
+  return writer.getWroteBuffer()
 }
