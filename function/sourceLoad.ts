@@ -141,15 +141,17 @@ function webpackBootstrapFunc (modules) {
           doneFns && doneFns.forEach(function(fn){fn(event)});
         }
         var timeout = setTimeout(onComplete.bind(null, undefined, { type: "timeout" }), 120000);
-      import(url).then(function() {
+      try {
+        importScripts(url);
         onComplete({
           type: "load"
-        })
-      }, function (error) {
+        });
+      }
+      catch(e) {
         onComplete({
           type: "missing"
-        })
-      });
+        });
+      }
     };
   })();
   __webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
