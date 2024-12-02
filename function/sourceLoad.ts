@@ -141,16 +141,24 @@ function webpackBootstrapFunc (modules) {
           doneFns && doneFns.forEach(function(fn){fn(event)});
         }
         var timeout = setTimeout(onComplete.bind(null, undefined, { type: "timeout" }), 120000);
-      try {
-        importScripts(url);
-        onComplete({
-          type: "load"
-        });
+      if (typeof importScripts === 'function') {
+        try {
+          importScripts(url);onComplete({type: "load"});
+        }
+        catch(e) {
+          onComplete({type: "missing"});
+        }
       }
-      catch(e) {
-        onComplete({
-          type: "missing"
-        });
+      else {
+        import(url).then(function() {
+          onComplete({
+            type: "load"
+          });
+        }, function (error) {
+          onComplete({
+            type: "missing"
+          });
+        })
       }
     };
   })();
