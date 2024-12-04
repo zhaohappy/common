@@ -109,3 +109,18 @@ interface DocumentPictureInPicture {
 }
 
 declare const documentPictureInPicture: DocumentPictureInPicture
+
+declare abstract class AudioWorkletProcessor {
+  protected port: MessagePort
+
+  public abstract process(inputs: Float32Array[][], outputs: Float32Array[][], parameters: {
+    averaging: Float32Array
+    output: Float32Array
+  }): boolean
+}
+
+interface AudioParamMap {
+  get(name: string): AudioParam
+}
+
+declare function registerProcessor(name: string, processor: typeof AudioWorkletProcessor): void
