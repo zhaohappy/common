@@ -109,7 +109,7 @@ interface DocumentPictureInPicture {
 }
 
 declare const documentPictureInPicture: DocumentPictureInPicture
-
+// @ts-ignore
 declare abstract class AudioWorkletProcessor {
   protected port: MessagePort
 
