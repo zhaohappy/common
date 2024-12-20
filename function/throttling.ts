@@ -5,6 +5,7 @@
 import execute from './execute'
 import { Fn, Timeout } from '../types/type'
 import * as array from '../util/array'
+import { ParamType } from '../types/advanced'
 
 /**
  * 节流调用
@@ -14,11 +15,11 @@ import * as array from '../util/array'
  * @param immediate 是否立即触发
  * @return 节流函数
  */
-export default function throttling(fn: Fn, delay: number, immediate?: boolean): Function {
+export default function throttling<T extends Fn>(fn: T, delay: number, immediate?: boolean): T {
 
   let timer: Timeout
 
-  function run(context: any, args: any[]) {
+  function run(context: any, args: ParamType<T>) {
     timer = setTimeout(function () {
       if (!immediate) {
         execute(fn, context, args)
@@ -30,12 +31,12 @@ export default function throttling(fn: Fn, delay: number, immediate?: boolean): 
 
   return function () {
     const context = this
-    const args = array.toArray(arguments)
+    const args = array.toArray(arguments) as ParamType<T>
     if (!timer) {
       if (immediate) {
         execute(fn, context, args)
       }
       run(context, args)
     }
-  }
+  } as T
 }
