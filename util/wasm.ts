@@ -26,6 +26,10 @@ export const enum ExternalKind {
   Global
 }
 
+export const enum DYlinkType {
+  MEMORY = 1
+}
+
 export function readUleb128(reader: BytesReaderSync) {
   let result = 0
   let shift = 0
