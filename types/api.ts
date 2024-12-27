@@ -124,3 +124,46 @@ interface AudioParamMap {
 }
 
 declare function registerProcessor(name: string, processor: typeof AudioWorkletProcessor): void
+
+/**
+ * The FileReaderSync interface provides methods to read File or Blob objects synchronously.
+ * This is available in Web Workers and allows blocking reads of file data.
+ */
+interface FileReaderSync {
+  /**
+   * Reads the contents of the specified `Blob` or `File` as an `ArrayBuffer`.
+   * 
+   * @param blob The `Blob` or `File` object to read.
+   * @returns An `ArrayBuffer` containing the binary data from the file.
+   */
+  readAsArrayBuffer(blob: Blob): ArrayBuffer;
+
+  /**
+   * Reads the contents of the specified `Blob` or `File` as a binary string.
+   * 
+   * @param blob The `Blob` or `File` object to read.
+   * @returns A binary string representation of the file data.
+   */
+  readAsBinaryString(blob: Blob): string;
+
+  /**
+   * Reads the contents of the specified `Blob` or `File` as a string.
+   * 
+   * @param blob The `Blob` or `File` object to read.
+   * @returns A `string` containing the file data interpreted as UTF-8 text.
+   */
+  readAsText(blob: Blob, encoding?: string): string;
+
+  /**
+   * Reads the contents of the specified `Blob` or `File` as a data URL.
+   * 
+   * @param blob The `Blob` or `File` object to read.
+   * @returns A `string` representing the file's data as a Base64-encoded data URL.
+   */
+  readAsDataURL(blob: Blob): string;
+}
+
+// Declare the global FileReaderSync in a worker context
+declare const FileReaderSync: {
+  new (): FileReaderSync;
+}
