@@ -54,7 +54,7 @@ export default class AESSoftDecryptor {
     )
   }
 
-  public async encryptPadding(padding: Uint8Array, iv: ArrayBuffer) {
+  public async encryptPadding(padding: Uint8Array, iv: BufferSource) {
     return new Uint8Array(await crypto.subtle.encrypt(
       {
         name: 'AES-CBC',

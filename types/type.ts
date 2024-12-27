@@ -334,4 +334,4 @@ export type TypeArrayConstructor = Uint8ArrayConstructor | Int8ArrayConstructor
 | Float32ArrayConstructor | Float64ArrayConstructor
 
 export type ArrayBufferSource = Uint8Array | Int8Array | Uint16Array | Int16Array
-| Uint32Array | Int32Array | Float32Array | Float64Array | BigInt64Array | BigUint64Array | ArrayBuffer
+| Uint32Array | Int32Array | Float32Array | Float64Array | BigInt64Array | BigUint64Array | ArrayBufferLike
