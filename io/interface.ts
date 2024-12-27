@@ -23,7 +23,7 @@ export interface Uint8ArrayInterface {
   subarray(begin?: number, end?: number): Uint8Array
   subarray(begin: number, end: number, safe: boolean): Uint8ArrayInterface
   view?: DataView
-  buffer: ArrayBuffer
+  buffer: ArrayBufferLike
   length: number
   byteLength: number
   byteOffset: number
