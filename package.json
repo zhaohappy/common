@@ -1,6 +1,6 @@
 {
   "name": "@libmedia/common",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "公共组件、工具、函数库",
   "repository": {
     "type": "git",
@@ -319,6 +319,11 @@
       "import": "./dist/esm/math/vector.js",
       "require": "./dist/cjs/math/vector.js",
       "types": "./dist/esm/math/vector.d.ts"
+    },
+    "./math/nearestPowerOf2": {
+      "import": "./dist/esm/math/nearestPowerOf2.js",
+      "require": "./dist/cjs/math/nearestPowerOf2.js",
+      "types": "./dist/esm/math/nearestPowerOf2.d.ts"
     },
     "./network/FakeMessageChannel": {
       "import": "./dist/esm/network/FakeMessageChannel.js",
