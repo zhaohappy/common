@@ -1,3 +1,6 @@
+/**
+ * 使用最小二乘法做线性拟合
+ */
 export default class LinearFitting {
 
   private x: number[]
