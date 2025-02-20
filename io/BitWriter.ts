@@ -95,8 +95,8 @@ export default class BitWriter {
     }
 
     if (this.pointer) {
-      if (this.bitPointer && this.pointer > 1) {
-        const ret = this.onFlush(this.buffer.subarray(0, this.pointer - 1))
+      if (this.bitPointer && this.pointer > 0) {
+        const ret = this.onFlush(this.buffer.subarray(0, this.pointer).slice())
         if (ret !== 0) {
           this.error = ret
           throw Error('BSWriter error, flush failed')
