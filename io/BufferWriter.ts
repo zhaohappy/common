@@ -79,16 +79,8 @@ export default class BufferWriter implements BytesWriterSync {
    * 写 64 位无符号整数
    */
   public writeUint64(value: bigint) {
-    const low = value & 0xffffffffn
-    const high = (value & (0xffffffffn << 32n)) >> 32n
-    if (this.littleEndian) {
-      this.writeUint32(Number(low))
-      this.writeUint32(Number(high))
-    }
-    else {
-      this.writeUint32(Number(high))
-      this.writeUint32(Number(low))
-    }
+    this.data.setBigUint64(this.pos + this.byteStart, value, this.littleEndian)
+    this.pos += 8
   }
 
   /**
@@ -127,16 +119,8 @@ export default class BufferWriter implements BytesWriterSync {
    * 写 64 位有符号整数
    */
   public writeInt64(value: bigint) {
-    const low = value & BigInt(0xffffffff)
-    const high = (value & (BigInt(0xffffffff) << 32n)) >> 32n
-    if (this.littleEndian) {
-      this.writeInt32(Number(low))
-      this.writeInt32(Number(high))
-    }
-    else {
-      this.writeInt32(Number(high))
-      this.writeInt32(Number(low))
-    }
+    this.data.setBigInt64(this.pos + this.byteStart, value, this.littleEndian)
+    this.pos += 8
   }
 
   /**
