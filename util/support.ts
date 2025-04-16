@@ -64,6 +64,7 @@ function supportedFeatures() {
   let workerMSE = typeof MediaSourceHandle === 'function'
 
   let webAssemblyGlobal = wasm && typeof WebAssembly.Global === 'function'
+  let trackGenerator = typeof MediaStreamTrackGenerator === 'function'
 
   return {
     browser,
@@ -94,7 +95,8 @@ function supportedFeatures() {
       || browser.safari && browser.checkVersion(browser.version, '16.4', true)
       || os.ios && browser.checkVersion(os.version, '16.4', true),
     wasmPlayerSupported: fetchSupported && wasm && webgl && audioContext && arrayBuffer && webAssemblyGlobal,
-    wasmBaseSupported: wasm && webAssemblyGlobal && arrayBuffer
+    wasmBaseSupported: wasm && webAssemblyGlobal && arrayBuffer,
+    trackGenerator
   }
 }
 
