@@ -4,7 +4,6 @@ import * as object from '../util/object'
 import * as is from '../util/is'
 
 /**
- * @internal
  * @param params 
  * @returns
  */
@@ -37,7 +36,6 @@ function formatData(contentType: string, data: any) {
 /**
  * 发送 post 请求
  * 
- * @internal
  * @param path fetch 路径
  * @param data post 发送 data
  * @returns 返回数据
@@ -105,7 +103,6 @@ export async function post(path: string, data: Object, contentType?: string, hea
 /**
  * 发送 get 请求
  * 
- * @internal
  * @param path fetch 路径
  * @param data get 发送 data
  * @returns 返回数据

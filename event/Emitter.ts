@@ -46,16 +46,19 @@ export default class Emitter {
 
   /**
    * 是否开启命名空间
+   * @hidden
    */
   ns: boolean
 
   /**
    * 已注册的事件监听
+   * @hidden
    */
   listeners: Record<string, EmitterOptions[]>
 
   /**
    * 原生事件监听，一个事件对应一个 listener
+   * @hidden
    */
   nativeListeners?: Record<string, NativeListener>
 

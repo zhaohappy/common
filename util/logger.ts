@@ -178,13 +178,13 @@ export function log(level: number, msg: string, file?: string, line?: number): v
 }
 
 /**
- * @internal
+ * @hidden
  * 是否上传，全局配置
  */
 let enableUpload: boolean = true
 
 /**
- * @internal
+ * @hidden
  * 日志上传等级，全局配置
  */
 let uploadLevel: number = WARN
