@@ -26,7 +26,7 @@ export default class WorkerTimer {
 
     this.started = false
 
-    this.clock = new Clock(this.interval, false)
+    this.clock = new Clock(this.interval, false, true)
 
     this.clock.onClock = (next) => {
       if (this.started && this.task() === false) {

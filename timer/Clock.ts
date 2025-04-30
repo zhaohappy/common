@@ -84,10 +84,13 @@ export default class Clock {
 
   private highPerformance: boolean
 
-  constructor(interval: number, highPerformance = true) {
+  private forceWorker: boolean
+
+  constructor(interval: number, highPerformance = true, forceWorker: boolean = false) {
     this.started = false
     this.interval = interval
     this.highPerformance = highPerformance
+    this.forceWorker = forceWorker
 
     this.a = 0.2
     this.b = 4
@@ -168,7 +171,7 @@ export default class Clock {
   private timeoutTick() {
     if (this.workerSetTimeout
       && document.visibilityState === 'hidden'
-      && this.interval < 1000
+      && (this.interval < 1000 || this.forceWorker)
     ) {
       this.workerTimer = this.workerSetTimeout.setTimeout(this.timeoutNext, this.interval)
     }
