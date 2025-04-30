@@ -22,23 +22,21 @@ const nativeConsole: Console | null = typeof console !== constant.RAW_UNDEFINED 
     defaultLogLevel = /common/.test(toString(constant.EMPTY_FUNCTION)) ? INFO : WARN,
 
     /**
-     * console 样式前缀
-     * ie 和 edge 不支持 console.log 样式
-     */
-    stylePrefix = constant.WINDOW && /edge|msie|trident/i.test(constant.WINDOW.navigator.userAgent) || true
-      ? constant.EMPTY_STRING
-      : '%c',
-
-    /**
      * 日志打印函数
      */
     printLog = nativeConsole
-      ? stylePrefix
-        ? function (tag: string, msg: string, style: string) {
-          nativeConsole.log(stylePrefix + tag, style, msg)
-        }
-        : function (tag: string, msg: string) {
+      ? function (tag: string, msg: string) {
           nativeConsole.log(tag, msg)
+        }
+      : constant.EMPTY_FUNCTION,
+    printWarn = nativeConsole
+      ? function (tag: string, msg: string) {
+          nativeConsole.warn(tag, msg)
+        }
+      : constant.EMPTY_FUNCTION,
+    printError = nativeConsole
+      ? function (tag: string, msg: string) {
+          nativeConsole.error(tag, msg)
         }
       : constant.EMPTY_FUNCTION
 
@@ -64,10 +62,6 @@ export function setLevel(level: number): void {
   constant.SELF['COMMON_LOG_LEVEL'] = level
 }
 
-function getStyle(backgroundColor: string) {
-  return `background-color:${backgroundColor};border-radius:12px;color:#fff;font-size:10px;padding:3px 6px;`
-}
-
 /**
  * 打印 trace 日志
  *
@@ -77,7 +71,7 @@ export function trace(msg: string, file: string, line: number): void
 export function trace<args = [defined<'__FILE__'>, defined<'__LINE__'>], enableArgs=defined<'ENABLE_LOG_PATH'>>(msg: string): void
 export function trace(msg: string, file?: string, line?: number): void {
   if (getLogLevel() <= TRACE) {
-    printLog(`[${arguments[1]}][line ${arguments[2]}] [trace]`, msg, getStyle('#999'))
+    printLog(`[${arguments[1]}][line ${arguments[2]}] [trace]`, msg)
   }
 }
 
@@ -90,7 +84,7 @@ export function debug(msg: string, file: string, line: number): void
 export function debug<args = [defined<'__FILE__'>, defined<'__LINE__'>], enableArgs=defined<'ENABLE_LOG_PATH'>>(msg: string): void
 export function debug(msg: string, file?: string, line?: number): void  {
   if (getLogLevel() <= DEBUG) {
-    printLog(`[${arguments[1]}][line ${arguments[2]}] [debug]`, msg, getStyle('#999'))
+    printLog(`[${arguments[1]}][line ${arguments[2]}] [debug]`, msg)
   }
 }
 
@@ -103,7 +97,7 @@ export function info(msg: string, file: string, line: number): void
 export function info<args = [defined<'__FILE__'>, defined<'__LINE__'>], enableArgs=defined<'ENABLE_LOG_PATH'>>(msg: string): void
 export function info(msg: string, file?: string, line?: number): void {
   if (getLogLevel() <= INFO) {
-    printLog(`[${arguments[1]}][line ${arguments[2]}] [info]`, msg, getStyle('#2db7f5'))
+    printLog(`[${arguments[1]}][line ${arguments[2]}] [info]`, msg)
   }
 }
 
@@ -116,7 +110,7 @@ export function warn(msg: string, file: string, line: number): void
 export function warn<args = [defined<'__FILE__'>, defined<'__LINE__'>], enableArgs=defined<'ENABLE_LOG_PATH'>>(msg: string): void
 export function warn(msg: string, file?: string, line?: number): void {
   if (getLogLevel() <= WARN) {
-    printLog(`[${arguments[1]}][line ${arguments[2]}] [warn]`, msg, getStyle('#f90'))
+    printWarn(`[${arguments[1]}][line ${arguments[2]}] [warn]`, msg)
   }
 }
 
@@ -129,7 +123,7 @@ export function error(msg: string, file: string, line: number): void
 export function error<args = [defined<'__FILE__'>, defined<'__LINE__'>], enableArgs=defined<'ENABLE_LOG_PATH'>>(msg: string): void
 export function error(msg: string, file?: string, line?: number): void {
   if (getLogLevel() <= ERROR) {
-    printLog(`[${arguments[1]}][line ${arguments[2]}] [error]`, msg, getStyle('#ed4014'))
+    printError(`[${arguments[1]}][line ${arguments[2]}] [error]`, msg)
   }
 }
 
