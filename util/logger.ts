@@ -26,18 +26,18 @@ const nativeConsole: Console | null = typeof console !== constant.RAW_UNDEFINED 
      */
     printLog = nativeConsole
       ? function (tag: string, msg: string) {
-          nativeConsole.log(tag, msg)
-        }
+        nativeConsole.log(tag, msg)
+      }
       : constant.EMPTY_FUNCTION,
     printWarn = nativeConsole
       ? function (tag: string, msg: string) {
-          nativeConsole.warn(tag, msg)
-        }
+        nativeConsole.warn(tag, msg)
+      }
       : constant.EMPTY_FUNCTION,
     printError = nativeConsole
       ? function (tag: string, msg: string) {
-          nativeConsole.error(tag, msg)
-        }
+        nativeConsole.error(tag, msg)
+      }
       : constant.EMPTY_FUNCTION
 
 /**
