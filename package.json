@@ -390,6 +390,11 @@
       "require": "./dist/cjs/timer/WorkerTimer.js",
       "types": "./dist/esm/timer/WorkerTimer.d.ts"
     },
+    "./timer/MasterTimer": {
+      "import": "./dist/esm/timer/MasterTimer.js",
+      "require": "./dist/cjs/timer/MasterTimer.js",
+      "types": "./dist/esm/timer/MasterTimer.d.ts"
+    },
     "./types/advanced": {
       "import": "./dist/esm/types/advanced.js",
       "require": "./dist/cjs/types/advanced.js",
