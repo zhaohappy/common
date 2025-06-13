@@ -36,7 +36,7 @@ export default function xml2Json(xmlStr: string, options = defaultOptions) {
       return
     }
 
-    if (key !== options.aloneValueName && item.obj[options.aloneValueName] != null) {
+    if (key === options.aloneValueName && item.obj[options.aloneValueName] != null) {
       item.obj[options.aloneValueName] = [item.obj[options.aloneValueName], {
         tagName: key,
         ...value
