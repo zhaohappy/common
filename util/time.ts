@@ -1,10 +1,10 @@
 
 export function hhColonDDColonSSDotMill2Int64(time: string) {
-  time = time.trim()
-
   if (!time) {
     return -1n
   }
+
+  time = time.trim()
 
   let list = time.split(':')
 
@@ -17,17 +17,19 @@ export function hhColonDDColonSSDotMill2Int64(time: string) {
 
   list = list.shift().trim().split('.')
   ts += BigInt(+(list.shift().trim())) * 1000n
-  ts += BigInt(+(list.shift().trim()))
+  if (list.length) {
+    ts += BigInt(+(list.shift().trim()))
+  }
 
   return ts
 }
 
 export function hhColonDDColonSSCommaMill2Int64(time: string) {
-  time = time.trim()
-
   if (!time) {
     return -1n
   }
+
+  time = time.trim()
 
   let list = time.split(':')
 
@@ -40,7 +42,9 @@ export function hhColonDDColonSSCommaMill2Int64(time: string) {
 
   list = list.shift().trim().split(',')
   ts += BigInt(+(list.shift().trim())) * 1000n
-  ts += BigInt(+(list.shift().trim()))
+  if (list.length) {
+    ts += BigInt(+(list.shift().trim()))
+  }
 
   return ts
 }
