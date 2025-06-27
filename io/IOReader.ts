@@ -37,6 +37,8 @@ export default class IOReader implements BytesReader {
 
   public flags: number
 
+  private flushResolve: (ret: number) => void
+
   /**
    * @param data 待读取的字节
    * @param bigEndian 是否按大端字节序读取，默认大端字节序（网络字节序）
@@ -709,13 +711,18 @@ export default class IOReader implements BytesReader {
   }
 
   private async flush_(buffer: Uint8Array) {
-    while (true) {
-      const len = await this.onFlush(buffer)
-      if (len !== IOError.AGAIN) {
-        return len
+    return new Promise<number>(async (resolve) => {
+      this.flushResolve = resolve
+      while (true) {
+        const len = await this.onFlush(buffer)
+        if (len !== IOError.AGAIN) {
+          this.flushResolve = null
+          resolve(len)
+          break
+        }
+        await new Sleep(0)
       }
-      await new Sleep(0)
-    }
+    })
   }
 
   /**
@@ -947,6 +954,14 @@ export default class IOReader implements BytesReader {
         this.pointer += len
         this.pos += BigInt(len)
       }
+    }
+  }
+
+  public abort() {
+    this.error = IOError.ABORT
+    if (this.flushResolve) {
+      this.flushResolve(IOError.ABORT)
+      this.flushResolve = null
     }
   }
 }
