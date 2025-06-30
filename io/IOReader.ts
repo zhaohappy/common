@@ -957,6 +957,9 @@ export default class IOReader implements BytesReader {
     }
   }
 
+  /**
+   * 中断 flush 操作
+   */
   public abort() {
     this.error = IOError.ABORT
     if (this.flushResolve) {
