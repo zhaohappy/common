@@ -877,6 +877,15 @@ export default class IOReader implements BytesReader {
   }
 
   /**
+   * 当前读取模式是否是大端
+   * 
+   * @returns 
+   */
+  public isBigEndian() {
+    return !this.littleEndian
+  }
+
+  /**
    * 获取源总字节长度
    * 
    * @returns 
