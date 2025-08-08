@@ -1,3 +1,4 @@
+import isAudioWorklet from '../function/isAudioWorklet'
 import isWorker from '../function/isWorker'
 import browser from './browser'
 import os from './os'
@@ -35,7 +36,7 @@ function supportedFeatures() {
 
   let proxy = typeof Proxy === 'function'
 
-  let thread = (worker || isWorker()) && shareArrayBuffer && atomics && proxy
+  let thread = (worker || isWorker() || isAudioWorklet()) && shareArrayBuffer && atomics && proxy
 
   let jspi = typeof WebAssembly.Suspending === 'function' && typeof WebAssembly.promising === 'function'
 
