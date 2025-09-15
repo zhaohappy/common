@@ -769,7 +769,7 @@ export default class IOReaderSync implements BytesReaderSync {
     if (!force) {
       const len = Number(pos - this.pos)
       // 可以往回 seek
-      if (len < 0 && Math.abs(len) < this.pointer) {
+      if (len < 0 && Math.abs(len) <= this.pointer) {
         this.pointer += len
         this.pos = pos
         return
