@@ -13,6 +13,11 @@ export type Fn = (...args: any[]) => any
 
 export type Timeout = null | ReturnType<typeof setTimeout>
 
+export interface PromisePending<T = void> {
+  resolve: T extends void ? () => void : (result: T) => void
+  reject?: (error?: any) => void
+}
+
 export interface Range {
   from: number
   to: number
