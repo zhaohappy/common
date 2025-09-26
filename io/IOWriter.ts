@@ -4,7 +4,7 @@
 
 import { IOError } from './error'
 import * as text from '../util/text'
-import { Uint8ArrayInterface, BytesWriter } from './interface'
+import type { Uint8ArrayInterface, BytesWriter } from './interface'
 
 export default class IOWriter implements BytesWriter {
 

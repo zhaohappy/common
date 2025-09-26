@@ -6,7 +6,7 @@
  */
 
 import * as constant from '../util/constant'
-import { CustomEventInterface } from '../types/type'
+import type { CustomEventInterface } from '../types/type'
 
 export default class CustomEvent implements CustomEventInterface {
 

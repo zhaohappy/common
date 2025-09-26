@@ -3,9 +3,9 @@
  */
 
 import * as logger from '../util/logger'
-import IOWriter from './IOWriterSync'
+import type IOWriter from './IOWriterSync'
 import * as text from '../util/text'
-import { Uint8ArrayInterface, BytesReaderSync } from './interface'
+import type { Uint8ArrayInterface, BytesReaderSync } from './interface'
 import { IOError } from './error'
 
 export default class IOReaderSync implements BytesReaderSync {

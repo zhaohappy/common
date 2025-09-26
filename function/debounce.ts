@@ -3,10 +3,10 @@
  */
 
 import execute from './execute'
-import { Fn } from '../types/type'
+import type { Fn } from '../types/type'
 import * as array from '../util/array'
 import * as constant from '../util/constant'
-import { ParamType } from '../types/advanced'
+import type { ParamType } from '../types/advanced'
 
 /**
  * 防抖函数

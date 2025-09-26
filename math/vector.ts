@@ -1,4 +1,4 @@
-import Matrix3 from './Matrix3'
+import type Matrix3 from './Matrix3'
 import Matrix4 from './Matrix4'
 import { Vector3 } from './Vector3'
 

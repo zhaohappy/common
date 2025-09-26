@@ -4,7 +4,7 @@
 
 import Clock from './Clock'
 import getTimestamp from '../function/getTimestamp'
-import { Timeout } from '../types/type'
+import type { Timeout } from '../types/type'
 
 export default class LoopTask {
 

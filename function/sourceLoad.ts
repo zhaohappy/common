@@ -2,7 +2,7 @@
  * 将某个文件的代码变成字符串（Webpack 使用）
  */
 
-import { Data } from '../types/type'
+import type { Data } from '../types/type'
 
 const webpackBootstrapFunc = `
 function webpackBootstrapFunc (modules) {

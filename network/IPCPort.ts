@@ -1,4 +1,4 @@
-import { Data } from '../types/type'
+import type { Data } from '../types/type'
 import Emitter from '../event/Emitter'
 import isDef from '../function/isDef'
 

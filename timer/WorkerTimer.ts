@@ -2,7 +2,7 @@
  * @file worker 定时任务，规避后台 settimeout 最小间隔 1s 的问题
  */
 
-import { Timeout } from '../types/type'
+import type { Timeout } from '../types/type'
 import Clock from './Clock'
 
 export default class WorkerTimer {

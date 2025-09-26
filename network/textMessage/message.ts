@@ -1,5 +1,5 @@
-import IOReader from '../../io/IOReader'
-import IOWriter from '../../io/IOWriter'
+import type IOReader from '../../io/IOReader'
+import type IOWriter from '../../io/IOWriter'
 import * as object from '../../util/object'
 
 export class TextMessageRequest {

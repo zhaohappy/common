@@ -4,8 +4,8 @@
 
 import * as is from '../util/is'
 import * as constant from '../util/constant'
-import { ReturnType, ParamType } from '../types/advanced'
-import { Fn } from '../types/type'
+import type { ReturnType, ParamType } from '../types/advanced'
+import type { Fn } from '../types/type'
 
 /**
  * 任性地执行一个函数，不管它有没有、是不是

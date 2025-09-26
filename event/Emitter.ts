@@ -13,7 +13,7 @@ import * as string from '../util/string'
 import * as logger from '../util/logger'
 import execute from '../function/execute'
 import * as constant from '../util/constant'
-import { NativeListener, Fn, Task } from '../types/type'
+import type { NativeListener, Fn, Task } from '../types/type'
 
 export interface EmitterOptions extends Task {
 

@@ -2,7 +2,7 @@
  * @file netstring 实现
  */
 
-import { Data } from '../types/type'
+import type { Data } from '../types/type'
 import * as is from '../util/is'
 import RingBuffer from '../io/RingBuffer'
 import * as logger from '../util/logger'

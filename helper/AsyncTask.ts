@@ -3,7 +3,7 @@
  */
 
 import * as array from '../util/array'
-import { Task, Fn } from '../types/type'
+import type { Task, Fn } from '../types/type'
 import execute from '../function/execute'
 import nextTick from '../function/nextTick'
 

@@ -4,7 +4,7 @@
 
 import * as is from './is'
 import * as array from './array'
-import { Data } from '../types/type'
+import type { Data } from '../types/type'
 import * as constant from './constant'
 import * as keypathUtil from './keypath'
 import isDef from '../function/isDef'

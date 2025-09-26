@@ -2,7 +2,7 @@
  * @file 合并 TypeArray
  */
 
-import { TypeArray, TypeArrayConstructor } from '../types/type'
+import type { TypeArray, TypeArrayConstructor } from '../types/type'
 
 type ReplaceGeneric<T> = T extends Uint8Array<ArrayBuffer>
   ? Uint8Array<ArrayBufferLike>

@@ -2,7 +2,7 @@
  * @file sleep
  */
 
-import { Timeout } from '../types/type'
+import type { Timeout } from '../types/type'
 
 export default class Sleep {
 

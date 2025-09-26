@@ -4,9 +4,9 @@
 
 import { IOError } from './error'
 import * as logger from '../util/logger'
-import IOWriter from './IOWriter'
+import type IOWriter from './IOWriter'
 import * as text from '../util/text'
-import { Uint8ArrayInterface, BytesReader } from './interface'
+import type { Uint8ArrayInterface, BytesReader } from './interface'
 import Sleep from '../timer/Sleep'
 
 export default class IOReader implements BytesReader {

@@ -2,7 +2,7 @@
  * @file 串行操作
  */
 
-import { Timeout } from '../types/type'
+import type { Timeout } from '../types/type'
 
 /**
  * 串行操作，将一组函数依次调用

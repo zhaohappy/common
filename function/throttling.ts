@@ -3,9 +3,9 @@
  */
 
 import execute from './execute'
-import { Fn, Timeout } from '../types/type'
+import type { Fn, Timeout } from '../types/type'
 import * as array from '../util/array'
-import { ParamType } from '../types/advanced'
+import type { ParamType } from '../types/advanced'
 
 /**
  * 节流调用

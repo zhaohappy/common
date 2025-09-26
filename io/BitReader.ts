@@ -4,7 +4,7 @@
 
 import { IOError } from './error'
 import * as logger from '../util/logger'
-import { Uint8ArrayInterface } from './interface'
+import type { Uint8ArrayInterface } from './interface'
 
 export default class BitReader {
 

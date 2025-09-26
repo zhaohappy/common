@@ -3,7 +3,7 @@
  */
 
 import { each } from '../util/array'
-import { Browser } from '../types/type'
+import type { Browser } from '../types/type'
 import * as is from './is'
 import checkVersion from '../function/checkVersion'
 import os from './os'

@@ -1,6 +1,6 @@
 import BufferWriter from '../io/BufferWriter'
 import BufferReader from '../io/BufferReader'
-import { BytesReaderSync, BytesReader, BytesWriter, BytesWriterSync } from '../io/interface'
+import type { BytesReaderSync, BytesReader, BytesWriter, BytesWriterSync } from '../io/interface'
 import browser from './browser'
 import os from './os'
 

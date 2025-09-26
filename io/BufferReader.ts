@@ -4,7 +4,7 @@
 
 import concatTypeArray from '../function/concatTypeArray'
 import * as text from '../util/text'
-import { Uint8ArrayInterface, BytesReaderSync } from './interface'
+import type { Uint8ArrayInterface, BytesReaderSync } from './interface'
 
 export default class BufferReader implements BytesReaderSync {
 

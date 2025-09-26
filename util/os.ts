@@ -11,7 +11,7 @@
  *
  */
 
-import { OS } from '../types/type'
+import type { OS } from '../types/type'
 import { each } from '../util/array'
 
 /**
