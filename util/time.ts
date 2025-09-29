@@ -18,7 +18,15 @@ export function hhColonDDColonSSDotMill2Int64(time: string) {
   list = list.shift().trim().split('.')
   ts += BigInt(+(list.shift().trim())) * 1000n
   if (list.length) {
-    ts += BigInt(+(list.shift().trim()))
+    let len = list[0].trim().length
+    let mill = BigInt(+(list.shift().trim()))
+    if (len === 1) {
+      mill *= 100n
+    }
+    else if (len === 2) {
+      mill *= 10n
+    }
+    ts += mill
   }
 
   return ts
@@ -43,7 +51,15 @@ export function hhColonDDColonSSCommaMill2Int64(time: string) {
   list = list.shift().trim().split(',')
   ts += BigInt(+(list.shift().trim())) * 1000n
   if (list.length) {
-    ts += BigInt(+(list.shift().trim()))
+    let len = list[0].trim().length
+    let mill = BigInt(+(list.shift().trim()))
+    if (len === 1) {
+      mill *= 100n
+    }
+    else if (len === 2) {
+      mill *= 10n
+    }
+    ts += mill
   }
 
   return ts
