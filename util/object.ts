@@ -334,10 +334,10 @@ export function update(obj1: Object, obj2: Object) {
 /**
  * 反转 object 的 key value
  */
-export function reverse(obj: Record<number | string | symbol, number | string | symbol>) {
-  const result = {}
+export function reverse<T extends(number | string | symbol), U extends (number | string | symbol)>(obj: Record<T, U>): Record<U, T> {
+  const result = {} as Record<U, T>
   each(obj, (value, key) => {
-    result[value] = key
+    result[value as unknown as string] = key
   })
   return result
 }
