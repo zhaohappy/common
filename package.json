@@ -1,6 +1,6 @@
 {
   "name": "@libmedia/common",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "description": "公共组件、工具、函数库",
   "repository": {
     "type": "git",
@@ -309,6 +309,11 @@
       "import": "./dist/esm/math/matrix.js",
       "require": "./dist/cjs/math/matrix.js",
       "types": "./dist/esm/math/matrix.d.ts"
+    },
+    "./math/Ewma": {
+      "import": "./dist/esm/math/Ewma.js",
+      "require": "./dist/cjs/math/Ewma.js",
+      "types": "./dist/esm/math/Ewma.d.ts"
     },
     "./math/median": {
       "import": "./dist/esm/math/median.js",
