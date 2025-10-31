@@ -211,6 +211,15 @@ function getModuleDependencies(sources: string, module: string, queueName: strin
     retval[queueName].push(match[3])
   }
 
+  // dynamic import
+  re = new RegExp('(\\\\n|\\W)' + quoteRegExp(webpackRequireName) + '\\.bind\\(' + webpackRequireName + ',\\s*(\/\\*.*?\\*\/)?\\s*.*?(' + moduleNameReqExp + ').*?\\)', 'g')
+  while ((match = re.exec(fnString))) {
+    if (match[3] === 'dll-reference') {
+      continue
+    }
+    retval[queueName].push(match[3])
+  }
+
   // dll deps
   re = new RegExp('\\(' + quoteRegExp(webpackRequireName) + '\\("(dll-reference\\s(' + moduleNameReqExp + '))"\\)\\)' + dependencyRegExp, 'g')
   while ((match = re.exec(fnString))) {
