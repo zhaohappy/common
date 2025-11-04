@@ -23,7 +23,7 @@ export default class IOWriter implements BytesWriter {
   public error: number
 
   public onFlush: (data: Uint8Array, pos?: bigint) => Promise<number>
-  public onSeek: (seek: bigint) =>  Promise<number>
+  public onSeek: (seek: bigint) => Promise<number>
 
   /**
    * @param data 待写的 Uint8Array

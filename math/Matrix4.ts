@@ -262,7 +262,7 @@ export default class Matrix4 {
    * @param near 
    * @param far 
    */
-  ortho(left: number, right: number, bottom: number, top: number, near: number, far: number): Matrix4  {
+  ortho(left: number, right: number, bottom: number, top: number, near: number, far: number): Matrix4 {
     return this.multiply(new Matrix4().setOrtho(left, right, bottom, top, near, far))
   }
 
@@ -309,7 +309,7 @@ export default class Matrix4 {
    * @param near 
    * @param far 
    */
-  frustum(left: number, right: number, bottom: number, top: number, near: number, far: number): Matrix4  {
+  frustum(left: number, right: number, bottom: number, top: number, near: number, far: number): Matrix4 {
     return this.multiply(new Matrix4().setOrtho(left, right, bottom, top, near, far))
   }
 

@@ -75,7 +75,7 @@ export type AsyncReturnWithoutProperties<T> = RemoveNeverProperties<{
 
 export type UnwrapArray<T> = T extends (infer U)[] ? U : never
 
-export type IsAny<T> =  unknown extends T
+export type IsAny<T> = unknown extends T
   ? [T] extends [string]
     ? true
     : false

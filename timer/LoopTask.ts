@@ -204,7 +204,7 @@ export default class LoopTask {
 
   public destroy() {
     this.stop()
-    this.task =  null
+    this.task = null
     this.timeout = null
     this.interval = null
   }

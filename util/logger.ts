@@ -82,7 +82,7 @@ export function trace(msg: string, file?: string, line?: number): void {
  */
 export function debug(msg: string, file: string, line: number): void
 export function debug<args = [defined<'__FILE__'>, defined<'__LINE__'>], enableArgs=defined<'ENABLE_LOG_PATH'>>(msg: string): void
-export function debug(msg: string, file?: string, line?: number): void  {
+export function debug(msg: string, file?: string, line?: number): void {
   if (getLogLevel() <= DEBUG) {
     printLog(`[${arguments[1]}][line ${arguments[2]}] [debug]`, msg)
   }

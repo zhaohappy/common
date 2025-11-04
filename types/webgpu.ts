@@ -13,7 +13,7 @@ type GPUTextureAspect = 'all' | 'stencil-only' | 'depth-only'
 type GPUTextureDimension = '1d' | '2d' | '3d'
 type GPUTextureViewDimension = GPUTextureDimension | '2d-array' | 'cube' | 'cube-array'
 type GPUAddressMode = 'clamp-to-edge' | 'repeat' | 'mirror-repeat'
-type GPUFilterMode =  'nearest' | 'linear'
+type GPUFilterMode = 'nearest' | 'linear'
 type GPUMipmapFilterMode = 'nearest' | 'linear'
 type GPUBufferBindingType = 'uniform' | 'storage' | 'read-only-storage'
 type GPUSamplerBindingType = 'filtering' | 'non-filtering' | 'comparison'
@@ -259,7 +259,7 @@ type GPUVertexFormat =
     | 'sint32x4'
 
 interface GPURequestAdapterOptions {
-  powerPreference?:  GPUPowerPreference
+  powerPreference?: GPUPowerPreference
   forceFallbackAdapter?: boolean
 }
 
@@ -330,28 +330,28 @@ interface GPUCommandBuffer extends GPUObjectBase {
 }
 
 declare enum GPUBufferUsage {
-  MAP_READ      = 0x0001,
-  MAP_WRITE     = 0x0002,
-  COPY_SRC      = 0x0004,
-  COPY_DST      = 0x0008,
-  INDEX         = 0x0010,
-  VERTEX        = 0x0020,
-  UNIFORM       = 0x0040,
-  STORAGE       = 0x0080,
-  INDIRECT      = 0x0100,
+  MAP_READ = 0x0001,
+  MAP_WRITE = 0x0002,
+  COPY_SRC = 0x0004,
+  COPY_DST = 0x0008,
+  INDEX = 0x0010,
+  VERTEX = 0x0020,
+  UNIFORM = 0x0040,
+  STORAGE = 0x0080,
+  INDIRECT = 0x0100,
   QUERY_RESOLVE = 0x0200
 }
 
 enum GPUMapModeFlags {
-  READ  = 0x0001,
+  READ = 0x0001,
   WRITE = 0x0002
 }
 
 declare enum GPUTextureUsage {
-  COPY_SRC          = 0x01,
-  COPY_DST          = 0x02,
-  TEXTURE_BINDING   = 0x04,
-  STORAGE_BINDING   = 0x08,
+  COPY_SRC = 0x01,
+  COPY_DST = 0x02,
+  TEXTURE_BINDING = 0x04,
+  STORAGE_BINDING = 0x08,
   RENDER_ATTACHMENT = 0x10
 }
 
@@ -370,10 +370,10 @@ interface GPUTextureViewDescriptor extends GPUObjectDescriptorBase {
   format?: GPUTextureFormat
   dimension?: GPUTextureViewDimension
   aspect?: GPUTextureAspect
-  baseMipLevel?:  GPUIntegerCoordinate
-  mipLevelCount?:  GPUIntegerCoordinate
-  baseArrayLayer?:  GPUIntegerCoordinate
-  arrayLayerCount?:  GPUIntegerCoordinate
+  baseMipLevel?: GPUIntegerCoordinate
+  mipLevelCount?: GPUIntegerCoordinate
+  baseArrayLayer?: GPUIntegerCoordinate
+  arrayLayerCount?: GPUIntegerCoordinate
 }
 
 interface GPUTextureView extends GPUObjectBase {
@@ -451,7 +451,7 @@ interface GPUTextureDescriptor extends GPUObjectDescriptorBase {
   size: GPUExtent3D
   format: GPUTextureFormat
   usage: number
-  mipLevelCount?:  GPUIntegerCoordinate
+  mipLevelCount?: GPUIntegerCoordinate
   sampleCount?: GPUSize32
   dimension?: GPUTextureDimension
   viewFormats?: GPUTextureFormat[]
@@ -482,9 +482,9 @@ interface GPUExternalTexture extends GPUObjectBase {
 }
 
 declare enum GPUShaderStage {
-  VERTEX   = 0x1,
+  VERTEX = 0x1,
   FRAGMENT = 0x2,
-  COMPUTE  = 0x4
+  COMPUTE = 0x4
 }
 
 interface GPUBufferBindingLayout {
@@ -518,7 +518,7 @@ interface GPUBindGroupLayoutEntry {
   sampler?: GPUSamplerBindingLayout
   texture?: GPUTextureBindingLayout
   storageTexture?: GPUStorageTextureBindingLayout
-  externalTexture?:  GPUExternalTextureBindingLayout
+  externalTexture?: GPUExternalTextureBindingLayout
 }
 
 interface GPUBindGroupLayoutDescriptor extends GPUObjectDescriptorBase {
@@ -1049,7 +1049,7 @@ interface GPUDevice extends EventTarget, GPUObjectBase {
    * 
    * @param descriptor 
    */
-  createComputePipelineAsync(descriptor: GPUComputePipelineDescriptor):  Promise<GPUComputePipeline>
+  createComputePipelineAsync(descriptor: GPUComputePipelineDescriptor): Promise<GPUComputePipeline>
   /**
    * 异步创建一个渲染管线
    * @param descriptor 

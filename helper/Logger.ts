@@ -91,7 +91,7 @@ export default class Logger {
 
   public info(msg: string, upload: boolean, file: string, line: number): void
   public info<args = [defined<'__FILE__'>, defined<'__LINE__'>]>(msg: string, upload?: boolean): void
-  public info(msg: string, upload: boolean = false, file?: string, line?: number): void  {
+  public info(msg: string, upload: boolean = false, file?: string, line?: number): void {
     logger.info(msg, arguments[2], arguments[3])
 
     if ((logger.INFO >= this.options.uploadLevel || upload)

@@ -16,7 +16,7 @@ declare interface FileHandle extends FileSystemHandle {
   getFile(): Promise<File>
 }
 
-declare interface DirectoryHandle  extends FileSystemHandle {
+declare interface DirectoryHandle extends FileSystemHandle {
   getFileHandle(name: string): Promise<FileHandle>
   getDirectoryHandle(name: string): Promise<DirectoryHandle>
   [Symbol.iterator](): IterableIterator<FileSystemHandle>
