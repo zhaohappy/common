@@ -26,8 +26,21 @@ if (gpu.vendor === 'apple' && gpu.renderer.indexOf('m2') > -1) {
   renderer = 'm2'
 }
 
+function getHardwareConcurrency() {
+  if (typeof navigator === 'object') {
+    return navigator.hardwareConcurrency || 1
+  }
+  try {
+    const os = require('os')
+    return os.cpus().length
+  }
+  catch {
+    return 1
+  }
+}
+
 export default {
   vendor,
   renderer,
-  core: navigator.hardwareConcurrency
+  core: getHardwareConcurrency()
 }

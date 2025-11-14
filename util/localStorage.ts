@@ -9,7 +9,7 @@ import { EMPTY_FUNCTION } from '../util/constant'
 /**
  * 是否支持 localStorage
  */
-export const support = typeof window.localStorage !== 'undefined'
+export const support = typeof window === 'object' && typeof window.localStorage !== 'undefined'
 
 let _set: Function = EMPTY_FUNCTION
 let _get: Function = EMPTY_FUNCTION

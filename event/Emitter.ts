@@ -384,7 +384,7 @@ export default class Emitter {
      */
     const result = {
       type,
-      ns: constant.EMPTY_STRING,
+      ns: constant.EMPTY_STRING
     }
 
     // 是否开启命名空间

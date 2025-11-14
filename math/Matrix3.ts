@@ -9,7 +9,7 @@ export default class Matrix3 {
     return new Matrix3([
       matrix[0], matrix[3], matrix[6],
       matrix[1], matrix[4], matrix[7],
-      matrix[2], matrix[5], matrix[8],
+      matrix[2], matrix[5], matrix[8]
     ])
   }
 
@@ -26,7 +26,7 @@ export default class Matrix3 {
       this.element = new Float32Array([
         1, 0, 0,
         0, 1, 0,
-        0, 0, 1,
+        0, 0, 1
       ])
     }
   }
@@ -64,7 +64,7 @@ export default class Matrix3 {
     this.element = new Float32Array([
       1, 0, 0,
       0, 1, 0,
-      0, 0, 1,
+      0, 0, 1
     ])
     return this
   }

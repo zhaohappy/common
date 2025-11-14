@@ -58,10 +58,10 @@ export default class AESSoftDecryptor {
     return new Uint8Array(await crypto.subtle.encrypt(
       {
         name: 'AES-CBC',
-        iv,
+        iv
       },
       this.key,
-      padding
+      padding as BufferSource
     ))
   }
 
@@ -74,7 +74,7 @@ export default class AESSoftDecryptor {
             iv
           },
           this.key,
-          input,
+          input as BufferSource
         )
       case AesMode.CTR:
         return this.subtle.decrypt(
@@ -84,7 +84,7 @@ export default class AESSoftDecryptor {
             length: 64
           },
           this.key,
-          input
+          input as BufferSource
         )
     }
   }

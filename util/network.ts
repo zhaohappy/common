@@ -6,7 +6,7 @@
 let networkStr: string
 let networkType: string
 
-const ua = navigator.userAgent || ''
+const ua = typeof navigator === 'object' && navigator.userAgent || ''
 networkStr = ua.match(/NetType\/\w+/) ? ua.match(/NetType\/\w+/)[0] : 'NetType/other'
 networkStr = networkStr.toLowerCase().replace('nettype/', '')
 
@@ -23,7 +23,7 @@ const networkMap = {
 
 networkType = networkMap[networkStr]
 
-if (!networkType) {
+if (!networkType && typeof navigator === 'object') {
   let connection = (navigator as any).connection
     || (navigator as any).mozConnection
     || (navigator as any).webkitConnection

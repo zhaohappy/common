@@ -48,7 +48,7 @@ export async function post(path: string, data: Object, contentType?: string, hea
       try {
         const header = {
           'Accept': 'application/json',
-          'Content-Type': contentType || 'application/json',
+          'Content-Type': contentType || 'application/json'
         }
         object.each(headers, (value, key) => {
           header[key] = value
@@ -115,7 +115,7 @@ export async function get(path: string, data: Object, contentType?: string, head
       try {
         const header = {
           'Accept': 'application/json',
-          'Content-Type': contentType || 'application/json',
+          'Content-Type': contentType || 'application/json'
         }
         object.each(headers, (value, key) => {
           header[key] = value

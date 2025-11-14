@@ -3,7 +3,6 @@ import isWorker from '../function/isWorker'
 import browser from './browser'
 import os from './os'
 
-
 function supportedFeatures() {
 
   let blob = typeof Blob === 'function'

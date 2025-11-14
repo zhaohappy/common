@@ -250,7 +250,7 @@ export function buildAbsoluteURL(baseURL: string, relativeURL: string, opts?: {
     path: null,
     params: relativeParts.params,
     query: relativeParts.query,
-    fragment: relativeParts.fragment,
+    fragment: relativeParts.fragment
   }
   if (!relativeParts.netLoc) {
     // 3) If the embedded URL's <net_loc> is non-empty, we skip to
