@@ -14,40 +14,51 @@
   "devDependencies": {
     "@types/node": "^22.10.1"
   },
+  "type": "module",
+  "types": "./dist/esm/index.d.ts",
+  "main": "./dist/cjs/index.cjs",
+  "module": "./dist/esm/index.js",
   "exports": {
     ".": {
       "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js",
+      "require": "./dist/cjs/index.cjs",
+      "default": "./dist/esm/index.js",
       "types": "./dist/esm/index.d.ts"
     },
     "./io": {
       "import": "./dist/esm/io/index.js",
-      "require": "./dist/cjs/io/index.js",
+      "require": "./dist/cjs/io/index.cjs",
+      "default": "./dist/esm/io/index.js",
       "types": "./dist/esm/io/index.d.ts"
     },
     "./math": {
       "import": "./dist/esm/math/index.js",
-      "require": "./dist/cjs/math/index.js",
+      "require": "./dist/cjs/math/index.cjs",
+      "default": "./dist/esm/math/index.js",
       "types": "./dist/esm/math/index.d.ts"
     },
     "./network": {
       "import": "./dist/esm/network/index.js",
-      "require": "./dist/cjs/network/index.js",
+      "require": "./dist/cjs/network/index.cjs",
+      "default": "./dist/esm/network/index.js",
       "types": "./dist/esm/network/index.d.ts"
     },
     "./timer": {
       "import": "./dist/esm/timer/index.js",
-      "require": "./dist/cjs/timer/index.js",
+      "require": "./dist/cjs/timer/index.cjs",
+      "default": "./dist/esm/timer/index.js",
       "types": "./dist/esm/timer/index.d.ts"
     },
     "./constant": {
       "import": "./dist/esm/util/constant.js",
-      "require": "./dist/cjs/util/constant.js",
+      "require": "./dist/cjs/util/constant.cjs",
+      "default": "./dist/esm/util/constant.js",
       "types": "./dist/esm/util/constant.d.ts"
     },
     "./sourceLoad": {
       "import": "./dist/esm/function/sourceLoad.js",
-      "require": "./dist/cjs/function/sourceLoad.js",
+      "require": "./dist/cjs/function/sourceLoad.cjs",
+      "default": "./dist/esm/function/sourceLoad.js",
       "types": "./dist/esm/function/sourceLoad.d.ts"
     }
   }
