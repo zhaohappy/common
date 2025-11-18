@@ -7,7 +7,8 @@
     "url": "git+https://github.com/zhaohappy/common.git"
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "author": "Gaoxing Zhao",
   "license": "MIT",

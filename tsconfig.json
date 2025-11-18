@@ -20,7 +20,7 @@
     "allowJs": false
   },
   "include": [
-    "./**/*.ts"
+    "./src/**/*.ts"
   ],
   "exclude": [
     "*.test.ts",
