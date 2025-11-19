@@ -1,6 +1,6 @@
 {
   "name": "@libmedia/common",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "公共组件、工具、函数库",
   "repository": {
     "type": "git",
