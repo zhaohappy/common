@@ -1,4 +1,4 @@
-export { default as Emitter, EmitterOptions } from './event/Emitter'
+export { default as Emitter, type EmitterOptions } from './event/Emitter'
 export { default as CustomEvent } from './event/CustomEvent'
 export { default as ArrayLike } from './interface/ArrayLike'
 export { default as AsyncTask } from './helper/AsyncTask'
