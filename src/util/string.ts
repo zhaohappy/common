@@ -190,3 +190,15 @@ export function format(string: string, ...args: any[]) {
     return str
   })
 }
+
+export function replaceAll(string: string, search: string | RegExp, replacement: string) {
+  if (search instanceof RegExp) {
+    // 必须带 g，否则 replaceAll 要抛错误
+    if (!search.global) {
+      throw new TypeError('String.prototype.replaceAll called with a non-global RegExp argument')
+    }
+    return string.replace(search, replacement)
+  }
+  // search 是字符串
+  return string.split(search).join(replacement)
+}

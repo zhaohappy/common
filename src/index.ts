@@ -61,6 +61,7 @@ export { default as toNumber } from './function/toNumber'
 export { default as toString } from './function/toString'
 export { default as underScoreCase } from './function/underScoreCase'
 export { default as underScoreCaseObject } from './function/underScoreCaseObject'
+export { default as withResolvers } from './function/withResolvers'
 
 export type {
   Data,
