@@ -70,7 +70,10 @@ export type {
   PromisePending,
   Fn,
   HttpOptions,
-  TypeArray
+  TypeArray,
+  Browser,
+  OS,
+  Network
 } from './types/type'
 
 export type {

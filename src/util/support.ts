@@ -67,7 +67,6 @@ function supportedFeatures() {
   let trackGenerator = typeof MediaStreamTrackGenerator === 'function'
 
   return {
-    browser,
     blob,
     wasm,
     fetch: fetchSupported,

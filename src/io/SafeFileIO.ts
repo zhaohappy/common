@@ -8,12 +8,12 @@ export default class SafeFileIO extends FileIO {
 
   private commandQueue: CommandQueue
 
-  constructor(handler: FileHandle, append: boolean = false) {
+  constructor(handler: FileSystemFileHandle, append: boolean = false) {
     super(handler, append)
     this.commandQueue = new CommandQueue()
   }
 
-  public async write(data: ArrayBuffer | ArrayBufferView) {
+  public async write(data: BufferSource) {
     return this.commandQueue.push(async () => {
       return super.write(data)
     })
@@ -43,7 +43,7 @@ export default class SafeFileIO extends FileIO {
     })
   }
 
-  public async appendBufferByPosition(buffer: ArrayBuffer | Uint8Array, position: number) {
+  public async appendBufferByPosition(buffer: BufferSource, position: number) {
     return this.commandQueue.push(async () => {
       return super.appendBufferByPosition(buffer, position)
     })

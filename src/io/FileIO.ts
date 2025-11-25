@@ -6,7 +6,7 @@ const RESIZE_CHUNK_SIZE = 1024 * 1024 * 5
  */
 export default class FileIO {
 
-  private handler: FileHandle
+  private handler: FileSystemFileHandle
 
   private file: File
 
@@ -29,7 +29,7 @@ export default class FileIO {
     reject: (data?: any) => void,
   }
 
-  constructor(handler: FileHandle, append: boolean = false) {
+  constructor(handler: FileSystemFileHandle, append: boolean = false) {
     this.handler = handler
     this.append = append
     this.readied = false
@@ -60,7 +60,7 @@ export default class FileIO {
     this.readied = true
   }
 
-  private async write_(data: ArrayBuffer | ArrayBufferView) {
+  private async write_(data: BufferSource) {
     await this.writer.write(data)
     this.pos += data.byteLength
     if (this.pos > this.size) {
@@ -68,7 +68,7 @@ export default class FileIO {
     }
   }
 
-  public async write(data: ArrayBuffer | ArrayBufferView) {
+  public async write(data: BufferSource) {
     await this.write_(data)
   }
 
@@ -113,7 +113,7 @@ export default class FileIO {
     return await this.read_(start, end)
   }
 
-  public async appendBufferByPosition(buffer: ArrayBuffer | Uint8Array, position: number) {
+  public async appendBufferByPosition(buffer: BufferSource, position: number) {
     await this.writer.close()
     this.file = await this.handler.getFile()
     this.writer = await this.handler.createWritable({
