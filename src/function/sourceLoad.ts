@@ -308,7 +308,8 @@ export default function (moduleId: string, options: {
 
   return src + 'var ' + options.varName + '=(' + webpackBootstrapFunc.replace('ENTRY_MODULE', stringifyModuleId)
     // @ts-ignore
-    .replace('ROOT_URL', __webpack_require__.p || '')
+    // eslint-disable-next-line camelcase
+    .replace('ROOT_URL', __webpack_public_path__ || '')
     // @ts-ignore
     .replace('LIBRARY_EXPORT_NAME', __LIBRARY_EXPORT_NAME__)
     // @ts-ignore
