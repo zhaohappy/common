@@ -183,21 +183,36 @@ function isNumeric(n: any) {
   // 1 * n converts integers, integers as string ("123"), 1e3 and "1e3" to integers and strings to NaN
   return !isNaN(n)
 }
+function escapeRegExp(str: string) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
 
-function getModuleDependencies(sources: string, module: string, queueName: string, requiredModules: Data) {
+function getModuleDependencies(sources: string, module: string, queueName: string, requiredModules: Data, moduleToCheck: string) {
   const retval = {}
   retval[queueName] = []
 
   let fnString = module.toString()
-  const wrapperSignature = fnString.match(/^(function)?\s?\w*\(\w+,\s*(\w+),\s*(\w+)\)/)
+  let webpackRequireName = ''
+  let webpackExportName = ''
+  let wrapperSignature = fnString.match(/^(function)?\s?\w*\(\w+,\s*(\w+),\s*(\w+)\)/)
   if (!wrapperSignature) {
-    return retval
+    wrapperSignature = fnString.match(new RegExp(`^("?${escapeRegExp(moduleToCheck + '')}"?)\\s*(\\/\\*[\\s\\S]*?\\*\\/)?\\s*\\(\\w+,\\s*(\\w+),\\s*(\\w+)\\)`))
+    if (!wrapperSignature) {
+      return retval
+    }
+    else {
+      webpackRequireName = wrapperSignature[4]
+      webpackExportName = wrapperSignature[3]
+    }
   }
-  const webpackRequireName = wrapperSignature[3]
+  else {
+    webpackRequireName = wrapperSignature[3]
+    webpackExportName = wrapperSignature[2]
+  }
 
   if (!requiredModules.__webpack_exports_process__) {
     requiredModules.__webpack_require__ = webpackRequireName
-    requiredModules.__webpack_exports__ = wrapperSignature[2]
+    requiredModules.__webpack_exports__ = webpackExportName
     requiredModules.__webpack_exports_process__ = true
   }
 
@@ -279,7 +294,7 @@ function getRequiredModules(sources, moduleId) {
       seenModules[queueName][moduleToCheck] = true
       requiredModules[queueName] = requiredModules[queueName] || []
       requiredModules[queueName].push(moduleToCheck)
-      let newModules = getModuleDependencies(sources, sources[queueName][moduleToCheck], queueName, requiredModules)
+      let newModules = getModuleDependencies(sources, sources[queueName][moduleToCheck], queueName, requiredModules, moduleToCheck)
       let newModulesKeys = Object.keys(newModules)
       for (let j = 0; j < newModulesKeys.length; j++) {
         modulesQueue[newModulesKeys[j]] = modulesQueue[newModulesKeys[j]] || []
@@ -316,7 +331,14 @@ export default function (moduleId: string, options: {
     .replace('LIB_NAME', __webpack_require__.u && __webpack_require__.u('') || '')
       + ')({' + requiredModules.main.map(function (id) {
     const stringifyId = JSON.stringify(id)
-    let source = '' + stringifyId + ': ' + sources.main[id].toString()
+    const content = sources.main[id].toString()
+    let source = ''
+    if (new RegExp(`^\s*"?${escapeRegExp(id + '')}"?`).test(content)) {
+      source = content
+    }
+    else {
+      source = stringifyId + ': ' + content
+    }
     if (stringifyId === stringifyModuleId && options.exportName && options.pointName) {
       const line = `;${requiredModules.__webpack_require__}.d(
           ${requiredModules.__webpack_exports__},
