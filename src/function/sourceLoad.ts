@@ -194,9 +194,9 @@ function getModuleDependencies(sources: string, module: string, queueName: strin
   let fnString = module.toString()
   let webpackRequireName = ''
   let webpackExportName = ''
-  let wrapperSignature = fnString.match(/^(function)?\s?\w*\(\w+,\s*(\w+),\s*(\w+)\)/)
+  let wrapperSignature = fnString.match(/^(function)?\s?[\w$]*\([\w$]+,\s*([\w$]+),\s*([\w$]+)\)/)
   if (!wrapperSignature) {
-    wrapperSignature = fnString.match(new RegExp(`^("?${escapeRegExp(moduleToCheck + '')}"?)\\s*(\\/\\*[\\s\\S]*?\\*\\/)?\\s*\\(\\w+,\\s*(\\w+),\\s*(\\w+)\\)`))
+    wrapperSignature = fnString.match(new RegExp(`^("?${escapeRegExp(moduleToCheck + '')}"?)\\s*(\\/\\*[\\s\\S]*?\\*\\/)?\\s*\\([\\w$]+,\\s*([\\w$]+),\\s*([\\w$]+)\\)`))
     if (!wrapperSignature) {
       return retval
     }
