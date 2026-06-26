@@ -2,11 +2,11 @@
   "compilerOptions": {
     "sourceMap": true,
     "declaration": true,
-    "downlevelIteration": true,
     "declarationMap": false,
     "target": "esnext",
     "esModuleInterop": true,
     "baseUrl": "./",
+    "strict": false,
     "typeRoots": [
       "./node_modules/@types",
     ],
