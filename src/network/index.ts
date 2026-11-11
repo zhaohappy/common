@@ -9,6 +9,7 @@ export {
   default as IPCPort,
   REQUEST,
   RpcMessage,
+  type IPCPortRequestOptions,
   NOTIFY
 } from './IPCPort'
 export { default as NetString } from './NetString'
