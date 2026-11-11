@@ -177,3 +177,7 @@ interface VideoFrameInit {
   rotation?: number
   flip?: boolean
 }
+
+interface VideoFrame {
+  realColorSpace?: VideoColorSpaceInit
+}

@@ -18,7 +18,8 @@ export default function checkVersion(version: string, checkVersion: string, equa
   const versionArr = version.split('.')
   for (let i = 0; i < versionArr.length; i++) {
     if (equal && i == (versionArr.length - 1) && toNumber(versionArr[i]) >= toNumber(checkVersionArr[i])) {
-      return versionArr.length >= checkVersionArr.length
+      return toNumber(versionArr[i]) > toNumber(checkVersionArr[i])
+        || versionArr.length >= checkVersionArr.length
     }
     if (toNumber(versionArr[i]) > toNumber(checkVersionArr[i])) {
       return true
