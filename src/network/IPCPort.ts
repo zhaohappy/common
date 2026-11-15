@@ -6,6 +6,10 @@ export const NOTIFY = 'notify'
 
 export const REQUEST = 'request'
 
+export interface IPCPortRequestOptions {
+  timeoutMs?: number
+}
+
 export interface RpcMessage {
   id?: number | string
   method?: string
@@ -23,6 +27,7 @@ export default class IPCPort extends Emitter {
   private requestMap: Map<number, {
     resolve: (value: any) => void
     reject: (value: any) => void
+    timer?: ReturnType<typeof setTimeout>
   }>
 
   private seq: number
@@ -54,6 +59,10 @@ export default class IPCPort extends Emitter {
     else if (type === 'reply') {
       const request = this.requestMap.get(data.seq)
       if (request) {
+        if (request.timer !== undefined) {
+          clearTimeout(request.timer)
+        }
+        this.requestMap.delete(data.seq)
         if (isDef(data.result)) {
           request.resolve(data.result)
         }
@@ -63,7 +72,6 @@ export default class IPCPort extends Emitter {
         else {
           request.resolve(undefined)
         }
-        this.requestMap.delete(data.seq)
       }
     }
     else if (type === 'request') {
@@ -81,24 +89,53 @@ export default class IPCPort extends Emitter {
     }, transfer)
   }
 
-  public async request<T>(method: string, params: Data = {}, transfer: any[] = []) {
+  public async request<T>(method: string, params: Data = {}, transfer: any[] = [], options: IPCPortRequestOptions = {}) {
+    if (options.timeoutMs !== undefined
+      && (!Number.isInteger(options.timeoutMs) || options.timeoutMs <= 0 || options.timeoutMs > 2147483647)
+    ) {
+      throw new RangeError('timeoutMs must be an integer between 1 and 2147483647')
+    }
+    if (options.timeoutMs !== undefined && (typeof setTimeout !== 'function' || typeof clearTimeout !== 'function')) {
+      throw new Error('IPC deadline timers unavailable')
+    }
     return new Promise<T>((resolve, reject) => {
+      if (this.closed) {
+        reject(new Error('ipc port close'))
+        return
+      }
 
       const id = this.seq++
 
-      this.requestMap.set(id, {
+      const request = {
         resolve,
-        reject
-      })
+        reject,
+        timer: undefined as ReturnType<typeof setTimeout> | undefined
+      }
+      this.requestMap.set(id, request)
+      if (options.timeoutMs !== undefined) {
+        request.timer = setTimeout(() => {
+          this.requestMap.delete(id)
+          reject(new Error('ipc request timed out'))
+        }, options.timeoutMs)
+      }
 
-      this.port.postMessage({
-        type: 'request',
-        data: {
-          seq: id,
-          method,
-          params
+      try {
+        this.port.postMessage({
+          type: 'request',
+          data: {
+            seq: id,
+            method,
+            params
+          }
+        }, transfer)
+      }
+      catch (error) {
+        if (request.timer !== undefined) {
+          clearTimeout(request.timer)
         }
-      }, transfer)
+        this.requestMap.delete(id)
+        reject(error)
+      }
     })
   }
 
@@ -136,6 +173,9 @@ export default class IPCPort extends Emitter {
   public destroy() {
     if (this.requestMap.size) {
       this.requestMap.forEach((req) => {
+        if (req.timer !== undefined) {
+          clearTimeout(req.timer)
+        }
         req.reject('ipc port close')
       })
       this.requestMap.clear()
